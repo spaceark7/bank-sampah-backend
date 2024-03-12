@@ -1,0 +1,1 @@
+{"level":"error","message":"Error: \nInvalid `prismaClient.user.create()` invocation in\n/home/hasbi/code/bank sampah/backend/src/services/users/user-services.ts:23:42\n\n  20 }\n  21 data.password = await bcrypt.hash(data.password, 10)\n  22 \n→ 23 const user = await prismaClient.user.create(\nUnique constraint failed on the fields: (`phone_number`)"}

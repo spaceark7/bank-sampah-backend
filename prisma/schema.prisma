@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(uuid())
+  email    String  @unique
+  phone_number String?  @unique
+  password String
+
+  // Relations
+  user_detail   UserDetail? 
+  role    Role   @relation(fields: [role_id], references: [name])
+  role_id String  @default("User")
+
+  @@map("users")
+}
+
+model UserDetail {
+  id      String  @id @default(uuid())
+  first_name  String
+  last_name   String?
+  user_image_url String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+  activated_at DateTime?
+  
+  // Relations
+  user    User?   @relation(fields: [user_email], references: [email]) 
+  user_email  String  @unique
+  balance UserBalance? 
+  citizenship Citizenship?
+  transaction Transaction[]
+
+  @@map("user_details")
+}
+
+model UserBalance {
+  id      String  @id @default(uuid())
+  user_detail_id String  @unique
+  balance_amount Float @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  user_detail UserDetail? @relation(fields: [user_detail_id], references: [id])
+
+  @@map("user_balances")
+}
+
+model Citizenship {
+  id      String  @id @default(uuid())
+  family_id_number String?
+  nik_number  String? @unique
+  id_card_image_url String?
+  user_detail_email String  @unique
+  address Address?
+  gender String?
+  birth_date DateTime?
+  birth_place String?
+  marital_status String?
+
+  // Relations
+  user_detail UserDetail? @relation(fields: [user_detail_email], references: [user_email])
+  @@map("citizenships")
+}
+
+model Address {
+  id      String  @id @default(uuid())
+  address String
+  village String?
+  district String?
+  city String?
+  province String?
+  postal_code String?
+  citizen_id String? @unique
+
+  // Relations
+  citizenship Citizenship? @relation(fields: [citizen_id], references: [id])
+  @@map("addresses")
+}
+
+model Transaction {
+  id      String  @id @default(uuid())
+  transaction_status    String @default("pending")
+  user_detail_id String  
+  notes String?
+  deleted_at DateTime?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  transaction_detail TransactionDetail[]
+  user_detail UserDetail? @relation(fields: [user_detail_id], references: [id])
+  transaction_type_id   TransactionType @relation(fields: [transaction_type], references: [name])
+  transaction_type      String @default("redeem")
+  transaction_withdraw  TransactionWithdraw?
+  @@map("transactions")
+}
+
+model TransactionDetail {
+  id                    String  @id @default(uuid())
+  transaction_amount    Float @default(0)
+  transaction_weight    Float @default(0)
+  transaction_date      DateTime
+  transaction_material  String? 
+  transaction_image_url String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime @updatedAt
+
+  // Relations
+  transaction           Transaction? @relation(fields: [transaction_id], references: [id])
+  transaction_id        String @unique
+  
+  @@map("transaction_details")
+}
+
+model TransactionWithdraw {
+  id      String  @id @default(uuid())
+  transaction_id String @unique
+  transaction_withdraw_amount Float @default(0)
+  transaction_withdraw_date DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  transaction Transaction? @relation(fields: [transaction_id], references: [id])
+  @@map("transaction_withdraws")
+}
+
+model TransactionType {
+  id                String  @id @default(uuid())
+  name              String @unique
+  TransactionDetail Transaction[]
+
+  @@map("transaction_types")
+}
+
+model Role {
+  id   String @id @default(uuid())
+  name String @unique
+
+  // Relations
+  user User[]
+
+  @@map("roles")
+}
