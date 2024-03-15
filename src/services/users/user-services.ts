@@ -185,7 +185,15 @@ export class UserService {
     return userDetail
   }
 
-  async update(user: UserParam, data: UserUpdateParam) {
+  /***
+   * User Service
+   * @desc Update User
+   * @param {UserParam} user
+   * @param {UserUpdateParam} data
+   * @throws {ResponseError}
+   * @return {Promise<any>}
+   * */
+  async update(user: UserParam, data: UserUpdateParam): Promise<any> {
     const updateData: UserUpdateParam = await Validate(UpdateUserSchema, data)
     const userExist = await prismaClient.user.findFirst({
       where: {
@@ -241,7 +249,14 @@ export class UserService {
     return updatedUser
   }
 
-  async addOrEditUserCitizenship(user: UserParam, data: UserAddCitizenParam) {
+  /***
+   * User Service
+   * @desc Edit User
+   * @param {UserParam} user
+   * @return {Promise<any>}
+   * @throws {ResponseError}
+   * */
+  async addOrEditUserCitizenship(user: UserParam, data: UserAddCitizenParam): Promise<any> {
     const citizenData: UserAddCitizenParam = await Validate(UserCitizenSchema, data)
 
     const userExist = await prismaClient.user.findFirst({
@@ -307,5 +322,48 @@ export class UserService {
     }
 
     return citizen
+  }
+
+  /***
+   * User Service
+   * @desc Get All User
+   * @param {UserParam} user
+   * @return {Promise<any>}
+   * @throws {ResponseError}
+   * */
+  async getAllUser(): Promise<any> {
+    const users = await prismaClient.user.findMany({
+      where: {
+        user_detail: {
+          deleted_at: {
+            equals: null
+          },
+          activated_at: {
+            not: null
+          }
+        }
+      },
+      select: {
+        email: true,
+        phone_number: true,
+        role_id: true,
+        user_detail: {
+          select: {
+            first_name: true,
+            last_name: true,
+            user_image_url: true,
+            activated_at: true,
+            deleted_at: true,
+            balance: {
+              select: {
+                balance_amount: true
+              }
+            }
+          }
+        }
+      }
+    })
+
+    return users
   }
 }
