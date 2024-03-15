@@ -1,12 +1,16 @@
-import { prismaClient } from '../../config/database'
+import { PrismaErrorHandle, prismaClient } from '../../config/database'
 import { ResponseError } from '../../utils/error-response'
-import { UserCreateParam, UserLoginParam, UserParam } from '../../utils/params'
-import { LoginSchema, RegisterSchema } from '../../utils/validations/user/user-validation'
+import { UserAddCitizenParam, UserCreateParam, UserLoginParam, UserParam, UserUpdateParam } from '../../utils/params'
+import { LoginSchema, RegisterSchema, UpdateUserSchema, UserCitizenSchema } from '../../utils/validations/user/user-validation'
 import { Validate } from '../../utils/validations/validate'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
 export class UserService {
+  /***
+   * Auth Service
+   * @desc Register user
+   */
   async create(param: UserCreateParam) {
     console.log('param', param)
     const data: UserCreateParam = await Validate(RegisterSchema, param)
@@ -19,39 +23,55 @@ export class UserService {
     if (alreadyExist) {
       throw new ResponseError(400, 'Email sudah terdaftar')
     }
-    data.password = await bcrypt.hash(data.password, 10)
+    data.password = bcrypt.hashSync(data.password, 10)
 
-    const user = await prismaClient.user.create({
-      data: {
-        email: data.email,
-        phone_number: data.phone_number,
-        password: data.password,
-        user_detail: {
-          create: {
-            first_name: data.user_detail.first_name,
-            last_name: data.user_detail.last_name,
-            user_image_url: data.user_detail.user_image_url ?? null,
-            balance: {
+    const user = await prismaClient.user
+      .create({
+        data: {
+          email: data.email,
+          phone_number: data.phone_number,
+          password: data.password,
+          role: {
+            connectOrCreate: {
+              where: {
+                name: 'User'
+              },
               create: {
-                balance_amount: 0
+                name: 'User'
               }
-            },
-            activated_at: new Date()
+            }
+          },
+          user_detail: {
+            create: {
+              first_name: data.user_detail.first_name,
+              last_name: data.user_detail.last_name,
+              user_image_url: data.user_detail.user_image_url ?? null,
+              balance: {
+                create: {
+                  balance_amount: 0
+                }
+              },
+
+              activated_at: new Date()
+            }
+          }
+        },
+        select: {
+          email: true,
+          phone_number: true,
+          role_id: true,
+          user_detail: {
+            select: {
+              first_name: true,
+              last_name: true,
+              user_image_url: true
+            }
           }
         }
-      },
-      select: {
-        email: true,
-        phone_number: true,
-        user_detail: {
-          select: {
-            first_name: true,
-            last_name: true,
-            user_image_url: true
-          }
-        }
-      }
-    })
+      })
+      .catch((err) => {
+        PrismaErrorHandle(err)
+      })
 
     if (!user) {
       throw new ResponseError(400, 'Gagal membuat user')
@@ -60,6 +80,11 @@ export class UserService {
     return user
   }
 
+  /***
+   * Auth Service
+   * @desc Login user
+   * @param {UserLoginParam} param
+   */
   async login(param: UserLoginParam) {
     const loginData: UserLoginParam = await Validate(LoginSchema, param)
 
@@ -94,6 +119,11 @@ export class UserService {
     return token
   }
 
+  /***
+   * User Service
+   * @desc Get User Detail
+   * @param {UserParam} param
+   */
   async getUserDetail(param: UserParam) {
     const userDetail = await prismaClient.user.findFirst({
       where: {
@@ -102,6 +132,7 @@ export class UserService {
       select: {
         email: true,
         phone_number: true,
+        role_id: true,
         user_detail: {
           select: {
             first_name: true,
@@ -136,23 +167,127 @@ export class UserService {
     return userDetail
   }
 
-  // async update(id, data) {
-  //   const user = await this.userRepository.update(id, data)
-  //   return user
-  // }
+  async update(user: UserParam, data: UserUpdateParam) {
+    const updateData: UserUpdateParam = await Validate(UpdateUserSchema, data)
+    const userExist = await prismaClient.user.findFirst({
+      where: {
+        id: user.id
+      },
+      include: {
+        user_detail: true
+      }
+    })
 
-  // async delete(id) {
-  //   const user = await this.userRepository.delete(id)
-  //   return user
-  // }
+    if (!userExist) {
+      throw new ResponseError(404, 'User not found')
+    }
 
-  // async findById(id) {
-  //   const user = await this.userRepository.findById(id)
-  //   return user
-  // }
+    const updatedUser = await prismaClient.user
+      .update({
+        where: {
+          id: user.id
+        },
+        data: {
+          email: updateData.email ? updateData.email : userExist.email,
+          phone_number: updateData.phone_number ? updateData.phone_number : userExist.phone_number,
+          password: updateData.password ? bcrypt.hashSync(updateData.password, 10) : userExist.password,
+          user_detail: {
+            update: {
+              first_name: updateData.user_detail.first_name ? updateData.user_detail.first_name : userExist.user_detail?.first_name,
+              last_name: updateData.user_detail.last_name ? updateData.user_detail.last_name : userExist.user_detail?.last_name,
+              user_image_url: updateData.user_detail.user_image_url ? updateData.user_detail.user_image_url : userExist.user_detail?.user_image_url
+            }
+          }
+        },
+        select: {
+          email: true,
+          phone_number: true,
+          role_id: true,
+          user_detail: {
+            select: {
+              first_name: true,
+              last_name: true,
+              user_image_url: true
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        PrismaErrorHandle(err)
+      })
 
-  // async findAll() {
-  //   const users = await this.userRepository.findAll()
-  //   return users
-  // }
+    if (!updatedUser) {
+      throw new ResponseError(400, 'Gagal update user')
+    }
+
+    return updatedUser
+  }
+
+  async addOrEditUserCitizenship(user: UserParam, data: UserAddCitizenParam) {
+    const citizenData: UserAddCitizenParam = await Validate(UserCitizenSchema, data)
+
+    const userExist = await prismaClient.user.findFirst({
+      where: {
+        id: user.id
+      }
+    })
+
+    if (!userExist) {
+      throw new ResponseError(404, 'User not found')
+    }
+
+    const citizen = await prismaClient.citizenship
+      .upsert({
+        where: {
+          user_detail_email: userExist.email
+        },
+        create: {
+          user_detail_email: userExist.email,
+          nik_number: citizenData.nik_number,
+          family_id_number: citizenData.family_id_number,
+          gender: citizenData.gender,
+          marital_status: citizenData.marital_status,
+          address: {
+            create: {
+              address: citizenData.address?.address ?? '',
+              village: citizenData.address?.village,
+              district: citizenData.address?.district,
+              city: citizenData.address?.city,
+              province: citizenData.address?.province,
+              postal_code: citizenData.address?.postal_code
+            }
+          },
+          birth_place: citizenData.birth_place,
+          birth_date: citizenData.birth_date
+        },
+        update: {
+          user_detail_email: userExist.email,
+          nik_number: citizenData.nik_number,
+          family_id_number: citizenData.family_id_number,
+          gender: citizenData.gender,
+          marital_status: citizenData.marital_status,
+          address: {
+            create: {
+              address: citizenData.address?.address ?? '',
+              village: citizenData.address?.village,
+              district: citizenData.address?.district,
+              city: citizenData.address?.city,
+              province: citizenData.address?.province,
+              postal_code: citizenData.address?.postal_code
+            }
+          },
+          birth_place: citizenData.birth_place,
+          birth_date: citizenData.birth_date
+        }
+      })
+      .catch((err) => {
+        PrismaErrorHandle(err)
+      })
+
+    if (!citizen) {
+      throw new ResponseError(400, 'Gagal menambahkan data kewarganegaraan')
+    }
+
+    return citizen
+  }
 }
