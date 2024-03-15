@@ -22,6 +22,14 @@ protectedRoute.use(authMiddleware)
 protectedRoute.get('/users', userController.getUserDetail.bind(userController))
 
 /**
+ * @desc  Get All User
+ * @route GET /api/v1/users
+ * @access Admin
+ * @requiredHeaders Authorization
+ */
+protectedRoute.get('/users/all', RBACMiddleware, userController.getAllUsers.bind(userController))
+
+/**
  * @desc  Update User
  * @route PUT /api/v1/users
  * @access Private
@@ -48,7 +56,7 @@ protectedRoute.put('/users-citizenship', userController.addOrEditUserCitizenship
 /**
  * @desc  Create Material
  * @route POST /api/v1/materials
- * @access Private - Admin
+ * @access Admin
  * @requiredHeaders Authorization
  */
 protectedRoute.post('/materials', RBACMiddleware, materialController.createMaterial.bind(materialController))
@@ -56,7 +64,7 @@ protectedRoute.post('/materials', RBACMiddleware, materialController.createMater
 /**
  * @desc  Get Material By Id
  * @route GET /api/v1/materials/:id
- * @access Private
+ * @access Admin
  * @requiredHeaders Authorization
  */
 protectedRoute.get('/materials/:id', RBACMiddleware, materialController.getMaterialById.bind(materialController))
@@ -64,7 +72,7 @@ protectedRoute.get('/materials/:id', RBACMiddleware, materialController.getMater
 /**
  * @desc  Update Material
  * @route PUT /api/v1/materials/:id
- * @access Private - Admin
+ * @access Admin
  * @requiredHeaders Authorization
  */
 protectedRoute.put('/materials/:id', RBACMiddleware, materialController.updateMaterial.bind(materialController))
@@ -72,7 +80,7 @@ protectedRoute.put('/materials/:id', RBACMiddleware, materialController.updateMa
 /**
  * @desc  Get All Material
  * @route GET /api/v1/materials
- * @access Private
+ * @access Admin
  * @requiredHeaders Authorization
  */
 protectedRoute.get('/materials', RBACMiddleware, materialController.getAllMaterial.bind(materialController))
@@ -80,7 +88,7 @@ protectedRoute.get('/materials', RBACMiddleware, materialController.getAllMateri
 /**
  * @desc  Delete Material
  * @route DELETE /api/v1/materials/:id
- * @access Private - Admin
+ * @access Admin
  * @requiredHeaders Authorization
  * @requiredParams id
  */
