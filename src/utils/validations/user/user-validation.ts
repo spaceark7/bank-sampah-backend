@@ -47,6 +47,18 @@ const UserDetailSchema = yup.object({
 })
 
 // Auth Related
+const UpdateUserSchema = yup.object({
+  email: yup.string().email('Email tidak valid'),
+  phone_number: yup
+    .string()
+    .min(10, 'Nomor telepon tidak valid')
+    .matches(/^[0-9]+$/, 'Nomor telepon tidak valid'),
+  password: yup.string().min(8, 'Password minimal 8 karakter'),
+  confirm_password: yup.string().oneOf([yup.ref('password')], 'Password tidak sama'),
+  user_detail: UserDetailSchema
+})
+
+// Auth Related
 const RegisterSchema = yup.object({
   email: yup.string().email('Email tidak valid').required('Email tidak boleh kosong'),
   phone_number: yup
@@ -71,4 +83,4 @@ const LoginSchema = yup.object({
     .oneOf([yup.ref('password')], 'Password tidak sama')
 })
 
-export { RegisterSchema, LoginSchema, UserDetailSchema, UserCitizenSchema, AddressSchema }
+export { RegisterSchema, LoginSchema, UserDetailSchema, UserCitizenSchema, AddressSchema, UpdateUserSchema }
