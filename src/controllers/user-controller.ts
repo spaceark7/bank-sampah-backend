@@ -104,4 +104,25 @@ export class UserController {
       next(error)
     }
   }
+
+  /**
+   * @desc Get All Users
+   * @group Admin - Operations about user
+   */
+  async getAllUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await this.UserServiceInstance.getAllUser()
+
+      res.status(HTTP_RESPONSE_STATUS.OK).json(
+        ResponseDTO({
+          data: data,
+          instanceName: UserController.instanceName,
+          status: HTTP_RESPONSE_STATUS.OK,
+          method: HTTP_METHOD.GET
+        })
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
 }
