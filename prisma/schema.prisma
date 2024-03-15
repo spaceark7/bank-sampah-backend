@@ -115,6 +115,7 @@ model TransactionDetail {
   transaction_amount    Float @default(0)
   transaction_weight    Float @default(0)
   transaction_date      DateTime
+  transaction_unit      String
   transaction_material  String? 
   transaction_image_url String?
   created_at            DateTime? @default(now())
@@ -125,6 +126,22 @@ model TransactionDetail {
   transaction_id        String @unique
   
   @@map("transaction_details")
+}
+
+model Material {
+  id            String  @id @default(uuid())
+  name          String @unique
+  base_price    Float @default(0)
+  unit          String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  is_active     Boolean @default(true)
+  is_deleted    Boolean @default(false)
+  deleted_at    DateTime?
+
+
+  @@map("materials")
+
 }
 
 model TransactionWithdraw {
