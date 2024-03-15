@@ -1,5 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Prisma } from '@prisma/client'
 import { logger } from '../utils/logger'
+import { ResponseError } from '../utils/error-response'
 
 export const prismaClient = new PrismaClient({
   log: [
@@ -37,3 +38,13 @@ prismaClient.$on('warn', (e) => {
 prismaClient.$on('info', (e) => {
   logger.info('Info: ' + e.message)
 })
+
+export const PrismaErrorHandle = (error: Prisma.PrismaClientKnownRequestError) => {
+  if (error.code === 'P2002') {
+    let errorMessage = 'Error occurred'
+    if (Array.isArray(error.meta?.target)) {
+      errorMessage = `${error.meta.target.join(',')} sudah terdaftar`
+    }
+    throw new ResponseError(400, errorMessage)
+  }
+}
