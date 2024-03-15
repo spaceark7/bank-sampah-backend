@@ -133,10 +133,14 @@
   - Body:
     ```json
     {
-      "first_name": "johan",
-      "last_name": "dan",
-      "phone_number": "081234567890",
-      "user_image_url": "http://example.com/image.jpg"
+      "email": "Elias35@hotmail.com",
+      "password": "password",
+      "confirm_password": "password",
+      "phone_number": "08565656565",
+      "user_detail": {
+        "first_name": "Mariano",
+        "last_name": "Walsh"
+      }
     }
     ```
 - Response:
@@ -149,16 +153,15 @@
     ```json
     {
       "status": true,
-      "message": "Berhasil mengupdate data user",
+      "message": "PUT User successfully retrieved",
       "data": {
-        "id": 1,
-        "email": "john@example.com",
-        "phone_number": "081234567890",
-        "role": "user", // user or admin
-        "detail": {
-          "first_name": "johan",
-          "last_name": "dan",
-          "user_image_url": "http://example.com/image.jpg"
+        "email": "Elias35@hotmail.com",
+        "phone_number": "08565656565",
+        "role_id": "User",
+        "user_detail": {
+          "first_name": "Mariano",
+          "last_name": "Walsh",
+          "user_image_url": null
         }
       }
     }
@@ -329,6 +332,207 @@
     {
       "status": false,
       "message": "Data sudah ada"
+    }
+    ```
+
+### Material Api
+
+#### 1.1. Create Material (Admin Only)
+
+- Method: POST
+- URL: /api/v1/materials
+- Request:
+  - Headers:
+    - Authorization: Bearer
+  - Body:
+    ```json
+    {
+      "name": "Fresh",
+      "base_price": 754,
+      "unit": "Kg"
+    }
+    ```
+- Response:
+  - Success:
+    - Status: 201
+    - Body:
+    ```json
+    {
+      "status": true,
+      "message": "Berhasil menambahkan material",
+      "data": {
+        "id": "09f5d874-4028-46f7-87b1-48f4173a7541",
+        "name": "Rubber",
+        "base_price": 774,
+        "unit": "Kg",
+        "created_at": "2024-03-15T06:14:25.164Z",
+        "updated_at": "2024-03-15T06:14:25.164Z",
+        "is_active": true,
+        "is_deleted": false,
+        "deleted_at": null
+      }
+    }
+    ```
+  - Error:
+    - Status: 400
+    - Body:
+    ```json
+    {
+      "status": false,
+      "message": "Data sudah ada"
+    }
+    ```
+
+#### 1.2. Get All Material
+
+- Method: GET
+- URL: /api/v1/materials
+- Request:
+  - Headers:
+    - Authorization: Bearer
+- Response:
+  - Success:
+    - Status: 200
+    - Body:
+    ```json
+    {
+      "status": true,
+      "message": "Berhasil mendapatkan data material",
+      "data": [
+        {
+          "id": "09f5d874-4028-46f7-87b1-48f4173a7541",
+          "name": "Rubber",
+          "base_price": 774,
+          "unit": "Kg",
+          "created_at": "2024-03-15T06:14:25.164Z",
+          "updated_at": "2024-03-15T06:14:25.164Z",
+          "is_active": true,
+          "is_deleted": false,
+          "deleted_at": null
+        }
+      ]
+    }
+    ```
+  - Error:
+    - Status: 404
+    - Body:
+    ```json
+    {
+      "status": false,
+      "message": "Data tidak ditemukan",
+      "data": null
+    }
+    ```
+
+#### 1.3. Get Material By Id
+
+- Method: GET
+- URL: /api/v1/materials/:id
+- Request:
+  - Headers:
+    - Authorization: Bearer
+- Response:
+  - Success:
+    - Status: 200
+    - Body:
+    ```json
+    {
+      "status": true,
+      "message": "Berhasil mendapatkan data material",
+      "data": {
+        "id": "09f5d874-4028-46f7-87b1-48f4173a7541",
+        "name": "Rubber",
+        "base_price": 774,
+        "unit": "Kg",
+        "created_at": "2024-03-15T06:14:25.164Z",
+        "updated_at": "2024-03-15T06:14:25.164Z",
+        "is_active": true,
+        "is_deleted": false,
+        "deleted_at": null
+      }
+    }
+    ```
+  - Error:
+    - Status: 404
+    - Body:
+    ```json
+    {
+      "status": false,
+      "message": "Data tidak ditemukan",
+      "data": null
+    }
+    ```
+
+#### 1.4. Update Material (Admin Only)
+
+- Method: PUT
+- URL: /api/v1/materials/:id
+- Request:
+  - Headers:
+    - Authorization: Bearer
+  - Body:
+    ```json
+    {
+      "name": "Fresh",
+      "base_price": 754,
+      "unit": "Kg"
+    }
+    ```
+- Response:
+  - Success:
+    - Status: 200
+    - Body:
+    ```json
+    {
+      "status": true,
+      "message": "Berhasil mengupdate material",
+      "data": {
+        "id": "09f5d874-4028-46f7-87b1-48f4173a7541",
+        "name": "Fresh",
+        "base_price": 754,
+        "unit": "Kg",
+        "created_at": "2024-03-15T06:14:25.164Z",
+        "updated_at": "2024-03-15T06:14:25.164Z",
+        "is_active": true,
+        "is_deleted": false,
+        "deleted_at": null
+      }
+    }
+    ```
+  - Error:
+    - Status: 400
+    - Body:
+    ```json
+    {
+      "status": false,
+      "message": "Data sudah ada"
+    }
+    ```
+
+#### 1.5. Delete Material (Admin Only)
+
+- Method: DELETE
+- URL: /api/v1/materials/:id
+- Request:
+  - Headers:
+    - Authorization: Bearer
+- Response:
+  - Success:
+    - Status: 200
+    - Body:
+    ```json
+    {
+      "status": true,
+      "message": "Berhasil menghapus material"
+    }
+    ```
+  - Error:
+    - Status: 400
+    - Body:
+    ```json
+    {
+      "status": false,
+      "message": "Data tidak ditemukan"
     }
     ```
 
