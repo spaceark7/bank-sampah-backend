@@ -70,4 +70,38 @@ export class UserController {
       next(error)
     }
   }
+
+  async updateUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await this.UserServiceInstance.update(req.user, req.body)
+
+      res.status(HTTP_RESPONSE_STATUS.OK).json(
+        ResponseDTO({
+          data: data,
+          instanceName: UserController.instanceName,
+          status: HTTP_RESPONSE_STATUS.OK,
+          method: HTTP_METHOD.PUT
+        })
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async addOrEditUserCitizenshipInfo(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await this.UserServiceInstance.addOrEditUserCitizenship(req.user, req.body)
+
+      res.status(HTTP_RESPONSE_STATUS.OK).json(
+        ResponseDTO({
+          data: data,
+          instanceName: UserController.instanceName,
+          status: HTTP_RESPONSE_STATUS.OK,
+          method: HTTP_METHOD.POST
+        })
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
 }
