@@ -28,7 +28,7 @@ export const RBACMiddleware = async (req: Request, res: Response, next: NextFunc
 
     jwt.verify(token, _jwt_secret, async (err, decoded) => {
       if (err) {
-        res
+        return res
           .status(401)
           .json({
             status: false,
@@ -54,7 +54,7 @@ export const RBACMiddleware = async (req: Request, res: Response, next: NextFunc
           })
 
           if (!user) {
-            res
+            return res
               .status(401)
               .json({
                 status: false,
@@ -64,7 +64,7 @@ export const RBACMiddleware = async (req: Request, res: Response, next: NextFunc
           }
 
           if (user?.role_id !== 'Admin') {
-            res
+            return res
               .status(401)
               .json({
                 status: false,

@@ -8,7 +8,7 @@ const errorHandlerMiddleware = (err: any, req: express.Request, res: express.Res
   }
 
   if (err instanceof ResponseError) {
-    res
+    return res
       .status(err.status)
       .json({
         status: false,
@@ -16,7 +16,7 @@ const errorHandlerMiddleware = (err: any, req: express.Request, res: express.Res
       })
       .end()
   } else if (err instanceof ValidationError) {
-    res
+    return res
       .status(400)
       .json({
         errors: {
@@ -26,7 +26,7 @@ const errorHandlerMiddleware = (err: any, req: express.Request, res: express.Res
       })
       .end()
   } else {
-    res
+    return res
       .status(500)
       .json({
         errors: {
