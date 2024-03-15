@@ -90,7 +90,15 @@ export class UserService {
 
     const user = await prismaClient.user.findFirst({
       where: {
-        email: loginData.email
+        email: loginData.email,
+        user_detail: {
+          deleted_at: {
+            equals: null
+          },
+          activated_at: {
+            not: null
+          }
+        }
       }
     })
 
@@ -127,7 +135,15 @@ export class UserService {
   async getUserDetail(param: UserParam) {
     const userDetail = await prismaClient.user.findFirst({
       where: {
-        id: param.id
+        id: param.id,
+        user_detail: {
+          deleted_at: {
+            equals: null
+          },
+          activated_at: {
+            not: null
+          }
+        }
       },
       select: {
         email: true,
@@ -138,6 +154,8 @@ export class UserService {
             first_name: true,
             last_name: true,
             user_image_url: true,
+            activated_at: true,
+            deleted_at: true,
             balance: {
               select: {
                 balance_amount: true
