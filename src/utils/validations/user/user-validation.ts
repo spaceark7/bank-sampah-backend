@@ -71,7 +71,8 @@ const RegisterSchema = yup.object({
     .string()
     .required('Konfirmasi password tidak boleh kosong')
     .oneOf([yup.ref('password')], 'Password tidak sama'),
-  user_detail: UserDetailSchema.required()
+  user_detail: UserDetailSchema.required(),
+  isAdmin: yup.boolean().default(false)
 })
 
 const LoginSchema = yup.object({

@@ -11,7 +11,7 @@ export class UserService {
    * Auth Service
    * @desc Register user
    */
-  async create(param: UserCreateParam) {
+  static async create(param: UserCreateParam) {
     console.log('param', param)
     const data: UserCreateParam = await Validate(RegisterSchema, param)
     const alreadyExist = await prismaClient.user.count({
@@ -34,10 +34,10 @@ export class UserService {
           role: {
             connectOrCreate: {
               where: {
-                name: 'User'
+                name: data.isAdmin ? 'Admin' : 'User'
               },
               create: {
-                name: 'User'
+                name: data.isAdmin ? 'Admin' : 'User'
               }
             }
           },
@@ -85,22 +85,32 @@ export class UserService {
    * @desc Login user
    * @param {UserLoginParam} param
    */
-  async login(param: UserLoginParam) {
+  static async login(param: UserLoginParam) {
     const loginData: UserLoginParam = await Validate(LoginSchema, param)
 
-    const user = await prismaClient.user.findFirst({
-      where: {
-        email: loginData.email,
-        user_detail: {
-          deleted_at: {
-            equals: null
-          },
-          activated_at: {
-            not: null
+    console.log('loginData', loginData)
+    const user = await prismaClient.user
+      .findFirst({
+        where: {
+          email: loginData.email,
+          user_detail: {
+            deleted_at: {
+              equals: null
+            },
+            activated_at: {
+              not: null
+            }
           }
+        },
+        include: {
+          user_detail: true
         }
-      }
-    })
+      })
+      .catch((err) => {
+        PrismaErrorHandle(err)
+      })
+
+    console.log('user', user)
 
     if (!user) {
       throw new ResponseError(404, `${param.email} not found`)
@@ -109,6 +119,8 @@ export class UserService {
     const passwordMatch = await bcrypt.compare(loginData.password, user.password)
 
     if (!passwordMatch) {
+      console.log('passwordMatch:!user', passwordMatch)
+
       throw new ResponseError(403, 'Password did not match')
     }
 
@@ -132,7 +144,7 @@ export class UserService {
    * @desc Get User Detail
    * @param {UserParam} param
    */
-  async getUserDetail(param: UserParam) {
+  static async getUserDetail(param: UserParam) {
     const userDetail = await prismaClient.user.findFirst({
       where: {
         id: param.id,
@@ -193,7 +205,7 @@ export class UserService {
    * @throws {ResponseError}
    * @return {Promise<any>}
    * */
-  async update(user: UserParam, data: UserUpdateParam): Promise<any> {
+  static async update(user: Pick<UserParam, 'id'>, data: UserUpdateParam): Promise<any> {
     const updateData: UserUpdateParam = await Validate(UpdateUserSchema, data)
     const userExist = await prismaClient.user.findFirst({
       where: {
@@ -226,6 +238,7 @@ export class UserService {
           }
         },
         select: {
+          id: true,
           email: true,
           phone_number: true,
           role_id: true,
@@ -256,7 +269,7 @@ export class UserService {
    * @return {Promise<any>}
    * @throws {ResponseError}
    * */
-  async addOrEditUserCitizenship(user: UserParam, data: UserAddCitizenParam): Promise<any> {
+  static async addOrEditUserCitizenship(user: UserParam, data: UserAddCitizenParam): Promise<any> {
     const citizenData: UserAddCitizenParam = await Validate(UserCitizenSchema, data)
 
     const userExist = await prismaClient.user.findFirst({
@@ -326,14 +339,55 @@ export class UserService {
 
   /***
    * User Service
+   * @desc Deactivate User
+   * @group Admin - Operations about user
+   * @param {UserParam} user
+   * @return {Promise<any>}
+   * @throws {ResponseError}
+   * */
+  static async deactivateUser(user: Partial<UserParam>): Promise<any> {
+    const userExist = await prismaClient.user.findFirst({
+      where: {
+        id: user.id
+      }
+    })
+
+    if (!userExist) {
+      throw new ResponseError(404, 'User not found')
+    }
+
+    const deactivatedUser = await prismaClient.userDetail
+      .update({
+        where: {
+          user_email: userExist.email
+        },
+        data: {
+          deleted_at: new Date(),
+          activated_at: null
+        }
+      })
+      .catch((err) => {
+        PrismaErrorHandle(err)
+      })
+
+    if (!deactivatedUser) {
+      throw new ResponseError(400, 'Gagal menonaktifkan user')
+    }
+
+    return deactivatedUser
+  }
+
+  /***
+   * User Service
    * @desc Get All User
    * @param {UserParam} user
    * @return {Promise<any>}
    * @throws {ResponseError}
    * */
-  async getAllUser(): Promise<any> {
+  static async getAllUser(adminOnly: boolean = false): Promise<any> {
     const users = await prismaClient.user.findMany({
       where: {
+        role_id: adminOnly ? 'Admin' : 'User',
         user_detail: {
           deleted_at: {
             equals: null
@@ -344,21 +398,19 @@ export class UserService {
         }
       },
       select: {
+        id: true,
         email: true,
         phone_number: true,
         role_id: true,
         user_detail: {
           select: {
+            id: true,
             first_name: true,
             last_name: true,
             user_image_url: true,
             activated_at: true,
             deleted_at: true,
-            balance: {
-              select: {
-                balance_amount: true
-              }
-            }
+            balance: !adminOnly
           }
         }
       }

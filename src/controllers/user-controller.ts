@@ -3,12 +3,8 @@ import { UserService } from '../services/users/user-services'
 import { HTTP_METHOD, HTTP_RESPONSE_STATUS, ResponseDTO } from '../utils/response-dto'
 
 export class UserController {
-  private UserServiceInstance: UserService
   private static instanceName: string = 'User'
 
-  constructor() {
-    this.UserServiceInstance = new UserService()
-  }
   /**
    * @desc Create a new user
    * @group Auth - Operations about user
@@ -16,9 +12,9 @@ export class UserController {
    * @param res
    * @param next
    */
-  async createUser(req: Request, res: Response, next: NextFunction) {
+  static async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.UserServiceInstance.create(req.body)
+      const data = await UserService.create(req.body)
 
       res.status(HTTP_RESPONSE_STATUS.OK).json(
         ResponseDTO({
@@ -33,9 +29,9 @@ export class UserController {
     }
   }
 
-  async loginUser(req: Request, res: Response, next: NextFunction) {
+  static async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.UserServiceInstance.login(req.body)
+      const data = await UserService.login(req.body)
 
       res.status(HTTP_RESPONSE_STATUS.OK).json(
         ResponseDTO({
@@ -47,16 +43,18 @@ export class UserController {
           method: HTTP_METHOD.POST
         })
       )
-    } catch (error) {}
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
    * @desc Get User Detail
    * @group User - Operations about user
    */
-  async getUserDetail(req: Request, res: Response, next: NextFunction) {
+  static async getUserDetail(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.UserServiceInstance.getUserDetail(req.user)
+      const data = await UserService.getUserDetail(req.user)
 
       res.status(HTTP_RESPONSE_STATUS.OK).json(
         ResponseDTO({
@@ -71,9 +69,16 @@ export class UserController {
     }
   }
 
-  async updateUser(req: Request, res: Response, next: NextFunction) {
+  /**
+   * @desc Update User
+   * @group User - Operations about user
+   * @param req.user - User
+   * @param req.body - User
+   * @return {Promise<void>}
+   * */
+  static async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const data = await this.UserServiceInstance.update(req.user, req.body)
+      const data = await UserService.update(req.user, req.body)
 
       res.status(HTTP_RESPONSE_STATUS.OK).json(
         ResponseDTO({
@@ -88,9 +93,40 @@ export class UserController {
     }
   }
 
-  async addOrEditUserCitizenshipInfo(req: Request, res: Response, next: NextFunction) {
+  /**
+   * @desc Update Admin User
+   * @group Admin - Operations about user
+   * @param req.user - User
+   * @param req.body - User
+   * @return {Promise<void>}
+   * */
+  static async updateAdminUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { id } = req.params
+
     try {
-      const data = await this.UserServiceInstance.addOrEditUserCitizenship(req.user, req.body)
+      const data = await UserService.update(
+        {
+          id: id
+        },
+        req.body
+      )
+
+      res.status(HTTP_RESPONSE_STATUS.OK).json(
+        ResponseDTO({
+          data: data,
+          instanceName: UserController.instanceName,
+          status: HTTP_RESPONSE_STATUS.OK,
+          method: HTTP_METHOD.PUT
+        })
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async addOrEditUserCitizenshipInfo(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await UserService.addOrEditUserCitizenship(req.user, req.body)
 
       res.status(HTTP_RESPONSE_STATUS.OK).json(
         ResponseDTO({
@@ -109,9 +145,9 @@ export class UserController {
    * @desc Get All Users
    * @group Admin - Operations about user
    */
-  async getAllUsers(req: Request, res: Response, next: NextFunction) {
+  static async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.UserServiceInstance.getAllUser()
+      const data = await UserService.getAllUser()
 
       res.status(HTTP_RESPONSE_STATUS.OK).json(
         ResponseDTO({
@@ -119,6 +155,53 @@ export class UserController {
           instanceName: UserController.instanceName,
           status: HTTP_RESPONSE_STATUS.OK,
           method: HTTP_METHOD.GET
+        })
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * @desc Get All Admin Users
+   * @group Admin - Operations about user
+   */
+  static async getAllAdminUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await UserService.getAllUser(true)
+
+      res.status(HTTP_RESPONSE_STATUS.OK).json(
+        ResponseDTO({
+          data: data,
+          instanceName: UserController.instanceName,
+          status: HTTP_RESPONSE_STATUS.OK,
+          method: HTTP_METHOD.GET
+        })
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * @desc Deactivate User
+   * @group Admin - Operations about user
+   * @param req.user.id
+   * @return {Promise<void>}
+   * */
+  static async deactivateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { id } = req.params
+    try {
+      const data = await UserService.deactivateUser({
+        id: id
+      })
+
+      res.status(HTTP_RESPONSE_STATUS.OK).json(
+        ResponseDTO({
+          data: data,
+          instanceName: UserController.instanceName,
+          status: HTTP_RESPONSE_STATUS.OK,
+          method: HTTP_METHOD.DELETE
         })
       )
     } catch (error) {
