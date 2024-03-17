@@ -3,9 +3,10 @@ import { UserController } from '../controllers/user-controller'
 import { authMiddleware } from '../middlewares/auth-jwt-middleware'
 import { MaterialController } from '../controllers/material-controller'
 import { RBACMiddleware } from '../middlewares/rbac-middleware'
+import { TransactionController } from '../controllers/transaction-controller'
 
 const protectedRoute = express.Router()
-const userController = new UserController()
+
 const materialController = new MaterialController()
 
 /**
@@ -19,7 +20,7 @@ protectedRoute.use(authMiddleware)
  * @access Private
  * @requiredHeaders Authorization
  */
-protectedRoute.get('/users', userController.getUserDetail.bind(userController))
+protectedRoute.get('/users', UserController.getUserDetail)
 
 /**
  * @desc  Get All User
@@ -27,7 +28,23 @@ protectedRoute.get('/users', userController.getUserDetail.bind(userController))
  * @access Admin
  * @requiredHeaders Authorization
  */
-protectedRoute.get('/users/all', RBACMiddleware, userController.getAllUsers.bind(userController))
+protectedRoute.get('/users/all', RBACMiddleware, UserController.getAllUsers)
+
+/**
+ * @desc  Create Admin User
+ * @route GET /api/v1/users-admin'
+ * @access Admin
+ * @requiredHeaders Authorization
+ */
+protectedRoute.post('/users-admin', RBACMiddleware, UserController.createUser)
+
+/**
+ * @desc  Get All Admin User
+ * @route GET /api/v1/users-admin'
+ * @access Admin
+ * @requiredHeaders Authorization
+ */
+protectedRoute.get('/users-admin', RBACMiddleware, UserController.getAllAdminUsers)
 
 /**
  * @desc  Update User
@@ -35,15 +52,31 @@ protectedRoute.get('/users/all', RBACMiddleware, userController.getAllUsers.bind
  * @access Private
  * @requiredHeaders Authorization
  */
-protectedRoute.put('/users', userController.updateUser.bind(userController))
+protectedRoute.put('/users', UserController.updateUser)
+
+/**
+ * @desc  Update Admin User
+ * @route PUT /api/v1/users-admin
+ * @access Admin
+ * @requiredHeaders Authorization
+ */
+protectedRoute.put('/users-admin/:id', RBACMiddleware, UserController.updateAdminUser)
+
+/**
+ * @desc  Deactivate User
+ * @route Delete /api/v1/users
+ * @access Admin
+ * @requiredHeaders Authorization
+ */
+protectedRoute.delete('/users/:id', RBACMiddleware, UserController.deactivateUser)
 
 /**
  * @desc  Add User Citizenship Info
- * @route POST /api/v1/users/citizen
+ * @route POST /api/v1/users-citizenship
  * @access Private
  * @requiredHeaders Authorization
  */
-protectedRoute.post('/users-citizenship', userController.addOrEditUserCitizenshipInfo.bind(userController))
+protectedRoute.post('/users-citizenship', UserController.addOrEditUserCitizenshipInfo)
 
 /**
  * @desc  Edit User Citizenship Info
@@ -51,7 +84,7 @@ protectedRoute.post('/users-citizenship', userController.addOrEditUserCitizenshi
  * @access Private
  * @requiredHeaders Authorization
  */
-protectedRoute.put('/users-citizenship', userController.addOrEditUserCitizenshipInfo.bind(userController))
+protectedRoute.put('/users-citizenship', UserController.addOrEditUserCitizenshipInfo)
 
 /**
  * @desc  Create Material
@@ -94,4 +127,36 @@ protectedRoute.get('/materials', RBACMiddleware, materialController.getAllMateri
  */
 protectedRoute.delete('/materials/:id', RBACMiddleware, materialController.deleteMaterial.bind(materialController))
 
+/**
+ * @desc  Create Redeem Transaction
+ * @route POST /api/v1/transactions/redeem
+ * @access Admin
+ * @requiredHeaders Authorization
+ * @requiredBody transaction_type, user_detail_id, transaction_detail
+ */
+protectedRoute.post('/transactions/redeem', RBACMiddleware, TransactionController.redeem)
+
+/**
+ * @desc  Get All Transaction
+ * @route GET /api/v1/transactions
+ * @access [Private, Admin]
+ * @requiredHeaders Authorization
+ */
+protectedRoute.get('/transactions', TransactionController.getAllTransaction)
+
+/**
+ * @desc  Get Transaction By Id
+ * @route GET /api/v1/transactions/:id
+ * @access [Private, Admin]
+ * @requiredHeaders Authorization
+ */
+protectedRoute.get('/transactions/:id', TransactionController.getTransactionById)
+
+/**
+ * @desc  Update Transaction Detail
+ * @route PATCH /api/v1/transactions/:id
+ * @access [ Admin]
+ * @requiredHeaders Authorization
+ */
+protectedRoute.patch('/transactions/:id', RBACMiddleware, TransactionController.updateTransactionDetail)
 export { protectedRoute }
