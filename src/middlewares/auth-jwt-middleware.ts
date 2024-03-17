@@ -49,6 +49,15 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
           const user = await prismaClient.user.findUnique({
             where: {
               id: payload.id
+            },
+            include: {
+              user_detail: {
+                select: {
+                  first_name: true,
+                  last_name: true,
+                  user_email: true
+                }
+              }
             }
           })
 
@@ -62,7 +71,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
               .end()
           }
 
-          req.user = decoded
+          req.user = user
         }
         next()
       }
