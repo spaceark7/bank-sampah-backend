@@ -14,7 +14,7 @@
   "rules": {
     "no-var": "error",
     "semi": "off",
-    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "indent": ["off", 2, { "SwitchCase": 1 }],
     "no-multi-spaces": "error",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
@@ -31,6 +31,7 @@
     "@typescript-eslint/restrict-template-expressions": "warn",
     "jsdoc/newline-after-description": "off",
     "space-in-parens": "error",
+
     "no-multiple-empty-lines": "error",
     "prefer-const": "error"
   }

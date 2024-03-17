@@ -89,28 +89,28 @@
 
   - Success:
 
-        - Status: 200
-        - Body:
+    - Status: 200
+    - Body:
 
-          ```json
-          {
-            "status": true,
-            "message": "GET User successfully retrieved",
-            "data": {
-            "email": "Roxane.Wolff54@yahoo.com",
-            "phone_number": "08676767676",
-            "user_detail": {
-                "first_name": "Craig",
-                "last_name": "Batz",
-                "user_image_url": null,
-                "balance": {
-                    "balance_amount": 0
-                },
-                "citizenship": null
-            }
-            }
-            }
-            ```
+      ```json
+      {
+        "status": true,
+        "message": "GET User successfully retrieved",
+        "data": {
+          "email": "Roxane.Wolff54@yahoo.com",
+          "phone_number": "08676767676",
+          "user_detail": {
+            "first_name": "Craig",
+            "last_name": "Batz",
+            "user_image_url": null,
+            "balance": {
+              "balance_amount": 0
+            },
+            "citizenship": null
+          }
+        }
+      }
+      ```
 
   - Error:
     - Status: 401
@@ -549,15 +549,42 @@
   - Body:
     ```json
     {
-      "transaction_type": "redeem", // redeem or withdraw
-      "transaction_status": "pending", // pending, approved, rejected
-      "detail": [
+      "user_detail_id": "5fb8a67d-c3fb-4ecc-87a3-f45f7da9bd68",
+      "transaction_type": "Redeem",
+      "transaction_status": "Pending",
+      "notes": "Catatan Transaksi 2 User Lain",
+      "transaction_detail": [
         {
-          "transaction_material": "Kardus", // Fill with material name
-          "transaction_weight": 10, // In kg
-          "transaction_amount": 100000, // In rupiah
-          "transaction_date": "2024-04-24",
-          "transaction_image_url": "http://example.com/image.jpg" // Optional
+          "transaction_weight": 10,
+          "transaction_amount": 200,
+          "transaction_material": "Bronze",
+          "transaction_image_url": null,
+          "transaction_unit": "Kg",
+          "transaction_date": "2024-03-15T21:57:42.169Z"
+        },
+        {
+          "transaction_amount": 200,
+          "transaction_date": "2024-03-15T22:46:24.653Z",
+          "transaction_material": "Concrete",
+          "transaction_image_url": null,
+          "transaction_weight": 10,
+          "transaction_unit": "Kg"
+        },
+        {
+          "transaction_date": "2024-03-15T18:29:59.066Z",
+          "transaction_weight": 10,
+          "transaction_unit": "Kg",
+          "transaction_amount": 200,
+          "transaction_image_url": null,
+          "transaction_material": "Frozen"
+        },
+        {
+          "transaction_date": "2024-03-16T02:08:44.852Z",
+          "transaction_amount": 200,
+          "transaction_weight": 10,
+          "transaction_material": "Metal",
+          "transaction_image_url": null,
+          "transaction_unit": "Kg"
         }
       ]
     }
@@ -573,20 +600,75 @@
     ```json
     {
       "status": true,
-      "message": "Berhasil menambahkan transaksi",
+      "message": "Create Transaction created successfully",
       "data": {
-        "id": "ci2-2090-29i929",
-        "transaction_type": "redeem",
-        "transaction_status": "pending",
-        "detail": [
+        "id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb",
+        "transaction_status": "Pending",
+        "user_detail_id": "5fb8a67d-c3fb-4ecc-87a3-f45f7da9bd68",
+        "notes": "Catatan Transaksi 2 User Lain",
+        "deleted_at": null,
+        "created_at": "2024-03-16T16:08:31.409Z",
+        "updated_at": "2024-03-16T16:08:31.409Z",
+        "transaction_type": "Redeem",
+        "transaction_detail": [
           {
-            "transaction_material": "Kardus", // Fill with material name
-            "transaction_weight": 10, // In kg
-            "transaction_amount": 100000, // In rupiah
-            "transaction_date": "2024-04-24",
-            "transaction_image_url": "http://example.com/image.jpg" // Optional
+            "id": "d972652e-9638-4cf4-ae9a-6e5e4e1b7dd8",
+            "transaction_amount": 200,
+            "transaction_weight": 10,
+            "transaction_date": "2024-03-15T21:57:42.169Z",
+            "transaction_unit": "Kg",
+            "transaction_material": "Bronze",
+            "transaction_image_url": null,
+            "created_at": "2024-03-16T16:08:31.409Z",
+            "updated_at": "2024-03-16T16:08:31.409Z",
+            "transaction_id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb"
+          },
+          {
+            "id": "eaa23361-7d30-4418-bb01-5fe5d1d6df55",
+            "transaction_amount": 200,
+            "transaction_weight": 10,
+            "transaction_date": "2024-03-15T22:46:24.653Z",
+            "transaction_unit": "Kg",
+            "transaction_material": "Concrete",
+            "transaction_image_url": null,
+            "created_at": "2024-03-16T16:08:31.409Z",
+            "updated_at": "2024-03-16T16:08:31.409Z",
+            "transaction_id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb"
+          },
+          {
+            "id": "2e91ba4e-836a-4b2e-b16c-5e886d46cd87",
+            "transaction_amount": 200,
+            "transaction_weight": 10,
+            "transaction_date": "2024-03-15T18:29:59.066Z",
+            "transaction_unit": "Kg",
+            "transaction_material": "Frozen",
+            "transaction_image_url": null,
+            "created_at": "2024-03-16T16:08:31.409Z",
+            "updated_at": "2024-03-16T16:08:31.409Z",
+            "transaction_id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb"
+          },
+          {
+            "id": "d33dfd93-67bc-44d5-8f84-2b3facf6db9c",
+            "transaction_amount": 200,
+            "transaction_weight": 10,
+            "transaction_date": "2024-03-16T02:08:44.852Z",
+            "transaction_unit": "Kg",
+            "transaction_material": "Metal",
+            "transaction_image_url": null,
+            "created_at": "2024-03-16T16:08:31.409Z",
+            "updated_at": "2024-03-16T16:08:31.409Z",
+            "transaction_id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb"
           }
-        ]
+        ],
+        "user_detail": {
+          "id": "5fb8a67d-c3fb-4ecc-87a3-f45f7da9bd68",
+          "first_name": "Amina",
+          "last_name": "Gorczany",
+          "user_email": "Amos_Davis77@hotmail.com",
+          "balance": {
+            "balance_amount": 0
+          }
+        }
       }
     }
     ```
@@ -611,8 +693,8 @@
   - Query:
     - page: 1
     - limit: 10
-    - transaction_type: redeem // Optional
-    - transaction_status: pending // Optional
+    - type: redeem // Optional
+    - status: pending // Optional
 - Response:
   - Success:
     - Status: 200
@@ -620,30 +702,274 @@
     ```json
     {
       "status": true,
-      "message": "Berhasil mendapatkan data transaksi",
+      "message": "GET Get All Transaction successfully retrieved",
       "data": [
         {
-          "id": "ci2-2090-29i929",
-          "transaction_type": "redeem",
-          "transaction_status": "pending",
-          "note": "Diterima dengan baik", // Catatan dari admin
-          "detail": [
+          "id": "0506b0e6-71dd-4fc2-88e6-2f9ff45591f0",
+          "transaction_status": "Pending",
+          "user_detail_id": "7b4ada85-5fda-46eb-b253-5bdf0c56a70c",
+          "notes": "Catatan Transaksi 2",
+          "deleted_at": null,
+          "created_at": "2024-03-16T13:19:32.321Z",
+          "updated_at": "2024-03-16T13:19:32.321Z",
+          "transaction_type": "Redeem",
+          "transaction_detail": [
             {
-              "transaction_material": "Kardus", // Fill with material name
-              "transaction_weight": 10, // In kg
-              "transaction_amount": 100000, // In rupiah
-              "transaction_date": "2024-04-24",
-              "transaction_image_url": "http://example.com/image.jpg" // Optional
+              "id": "61e50e9c-b957-4d42-bc2e-c7cfc0c1fc0b",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-16T08:53:44.824Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Frozen",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T13:19:32.321Z",
+              "updated_at": "2024-03-16T13:19:32.321Z",
+              "transaction_id": "0506b0e6-71dd-4fc2-88e6-2f9ff45591f0"
+            },
+            {
+              "id": "1ace22af-661b-4280-9522-3c978c2ad86e",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-15T20:01:19.083Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Wooden",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T13:19:32.321Z",
+              "updated_at": "2024-03-16T13:19:32.321Z",
+              "transaction_id": "0506b0e6-71dd-4fc2-88e6-2f9ff45591f0"
             }
-          ]
+          ],
+          "user_detail": {
+            "id": "7b4ada85-5fda-46eb-b253-5bdf0c56a70c",
+            "first_name": "Elmer",
+            "last_name": "Kovacek",
+            "user_email": "Hannah_Corwin@yahoo.com"
+          }
+        },
+        {
+          "id": "6a01f29a-bbe5-4ba3-99d1-a11a800b2e21",
+          "transaction_status": "Success",
+          "user_detail_id": "7b4ada85-5fda-46eb-b253-5bdf0c56a70c",
+          "notes": "Catatan Transaksi 1",
+          "deleted_at": null,
+          "created_at": "2024-03-16T13:18:41.408Z",
+          "updated_at": "2024-03-16T13:18:41.408Z",
+          "transaction_type": "Redeem",
+          "transaction_detail": [
+            {
+              "id": "c71e1d2d-9544-41f8-b6d2-19492fd66882",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-16T08:53:44.824Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Frozen",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T13:18:41.408Z",
+              "updated_at": "2024-03-16T13:18:41.408Z",
+              "transaction_id": "6a01f29a-bbe5-4ba3-99d1-a11a800b2e21"
+            },
+            {
+              "id": "1b0532fc-ed03-43bd-9d13-730ec150d7e4",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-15T20:01:19.083Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Wooden",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T13:18:41.408Z",
+              "updated_at": "2024-03-16T13:18:41.408Z",
+              "transaction_id": "6a01f29a-bbe5-4ba3-99d1-a11a800b2e21"
+            }
+          ],
+          "user_detail": {
+            "id": "7b4ada85-5fda-46eb-b253-5bdf0c56a70c",
+            "first_name": "Elmer",
+            "last_name": "Kovacek",
+            "user_email": "Hannah_Corwin@yahoo.com"
+          }
+        },
+        {
+          "id": "704b0fd6-f152-4ea9-ae03-7c3aa25f4ed0",
+          "transaction_status": "Pending",
+          "user_detail_id": "5fb8a67d-c3fb-4ecc-87a3-f45f7da9bd68",
+          "notes": "Catatan Transaksi 1 User Lain",
+          "deleted_at": null,
+          "created_at": "2024-03-16T15:02:59.768Z",
+          "updated_at": "2024-03-16T15:02:59.768Z",
+          "transaction_type": "Redeem",
+          "transaction_detail": [
+            {
+              "id": "e2f75b5c-e67b-4c54-a536-569768f0686b",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-16T08:53:44.824Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Frozen",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T15:02:59.768Z",
+              "updated_at": "2024-03-16T15:02:59.768Z",
+              "transaction_id": "704b0fd6-f152-4ea9-ae03-7c3aa25f4ed0"
+            },
+            {
+              "id": "8fa74270-b4d3-44bd-a0b2-418d1f263fc6",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-15T20:01:19.083Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Wooden",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T15:02:59.768Z",
+              "updated_at": "2024-03-16T15:02:59.768Z",
+              "transaction_id": "704b0fd6-f152-4ea9-ae03-7c3aa25f4ed0"
+            }
+          ],
+          "user_detail": {
+            "id": "5fb8a67d-c3fb-4ecc-87a3-f45f7da9bd68",
+            "first_name": "Amina",
+            "last_name": "Gorczany",
+            "user_email": "Amos_Davis77@hotmail.com"
+          }
+        },
+        {
+          "id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb",
+          "transaction_status": "Pending",
+          "user_detail_id": "5fb8a67d-c3fb-4ecc-87a3-f45f7da9bd68",
+          "notes": "Catatan Transaksi 2 User Lain",
+          "deleted_at": null,
+          "created_at": "2024-03-16T16:08:31.409Z",
+          "updated_at": "2024-03-16T16:08:31.409Z",
+          "transaction_type": "Redeem",
+          "transaction_detail": [
+            {
+              "id": "d972652e-9638-4cf4-ae9a-6e5e4e1b7dd8",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-15T21:57:42.169Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Bronze",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T16:08:31.409Z",
+              "updated_at": "2024-03-16T16:08:31.409Z",
+              "transaction_id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb"
+            },
+            {
+              "id": "eaa23361-7d30-4418-bb01-5fe5d1d6df55",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-15T22:46:24.653Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Concrete",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T16:08:31.409Z",
+              "updated_at": "2024-03-16T16:08:31.409Z",
+              "transaction_id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb"
+            },
+            {
+              "id": "2e91ba4e-836a-4b2e-b16c-5e886d46cd87",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-15T18:29:59.066Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Frozen",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T16:08:31.409Z",
+              "updated_at": "2024-03-16T16:08:31.409Z",
+              "transaction_id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb"
+            },
+            {
+              "id": "d33dfd93-67bc-44d5-8f84-2b3facf6db9c",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-16T02:08:44.852Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Metal",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T16:08:31.409Z",
+              "updated_at": "2024-03-16T16:08:31.409Z",
+              "transaction_id": "87cca7ed-924e-4603-9fe9-b5149ccc0ddb"
+            }
+          ],
+          "user_detail": {
+            "id": "5fb8a67d-c3fb-4ecc-87a3-f45f7da9bd68",
+            "first_name": "Amina",
+            "last_name": "Gorczany",
+            "user_email": "Amos_Davis77@hotmail.com"
+          }
+        },
+        {
+          "id": "e7cf828c-4e61-45ed-8b1f-1f8aab82f452",
+          "transaction_status": "Pending",
+          "user_detail_id": "5fb8a67d-c3fb-4ecc-87a3-f45f7da9bd68",
+          "notes": "Catatan Transaksi 2 User Lain",
+          "deleted_at": null,
+          "created_at": "2024-03-16T15:03:19.723Z",
+          "updated_at": "2024-03-16T15:03:19.723Z",
+          "transaction_type": "Redeem",
+          "transaction_detail": [
+            {
+              "id": "70b7bbce-528e-4eb8-a014-1b16c6b6470e",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-15T21:57:42.169Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Bronze",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T15:03:19.723Z",
+              "updated_at": "2024-03-16T15:03:19.723Z",
+              "transaction_id": "e7cf828c-4e61-45ed-8b1f-1f8aab82f452"
+            },
+            {
+              "id": "68c5b50a-86c0-40ce-9045-82c727d85151",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-15T22:46:24.653Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Concrete",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T15:03:19.723Z",
+              "updated_at": "2024-03-16T15:03:19.723Z",
+              "transaction_id": "e7cf828c-4e61-45ed-8b1f-1f8aab82f452"
+            },
+            {
+              "id": "e0aaa2f7-dff7-4bed-bab2-81ded5590441",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-15T18:29:59.066Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Frozen",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T15:03:19.723Z",
+              "updated_at": "2024-03-16T15:03:19.723Z",
+              "transaction_id": "e7cf828c-4e61-45ed-8b1f-1f8aab82f452"
+            },
+            {
+              "id": "653da50b-d5c4-4d20-9b39-10a8ad10e367",
+              "transaction_amount": 200,
+              "transaction_weight": 10,
+              "transaction_date": "2024-03-16T02:08:44.852Z",
+              "transaction_unit": "Kg",
+              "transaction_material": "Metal",
+              "transaction_image_url": null,
+              "created_at": "2024-03-16T15:03:19.723Z",
+              "updated_at": "2024-03-16T15:03:19.723Z",
+              "transaction_id": "e7cf828c-4e61-45ed-8b1f-1f8aab82f452"
+            }
+          ],
+          "user_detail": {
+            "id": "5fb8a67d-c3fb-4ecc-87a3-f45f7da9bd68",
+            "first_name": "Amina",
+            "last_name": "Gorczany",
+            "user_email": "Amos_Davis77@hotmail.com"
+          }
         }
       ],
       "meta": {
         "page": 1,
         "limit": 10,
-        "total_data": 1,
-        "next_page": null,
-        "prev_page": null
+        "totalPages": 1,
+        "totalItems": 5,
+        "hasNextPage": false,
+        "hasPreviousPage": false
       }
     }
     ```
@@ -669,8 +995,8 @@
   - Query:
     - page: 1
     - limit: 10
-    - transaction_type: redeem // Optional
-    - transaction_status: pending // Optional
+    - type: redeem // Optional
+    - status: pending // Optional
     - user_id: ci2-2090-asdasd // Optional
 
 - Response:
@@ -742,21 +1068,48 @@
     ```json
     {
       "status": true,
-      "message": "Berhasil mendapatkan data transaksi",
+      "message": "GET Get Transaction By Id successfully retrieved",
       "data": {
-        "id": "ci2-2090-29i929",
-        "transaction_type": "redeem",
-        "transaction_status": "pending",
-        "note": "Diterima dengan baik", // Catatan dari admin
-        "detail": [
+        "id": "0506b0e6-71dd-4fc2-88e6-2f9ff45591f0",
+        "transaction_status": "Pending",
+        "user_detail_id": "7b4ada85-5fda-46eb-b253-5bdf0c56a70c",
+        "notes": "Catatan Transaksi 2",
+        "deleted_at": null,
+        "created_at": "2024-03-16T13:19:32.321Z",
+        "updated_at": "2024-03-16T13:19:32.321Z",
+        "transaction_type": "Redeem",
+        "transaction_detail": [
           {
-            "transaction_material": "Kardus", // Fill with material name
-            "transaction_weight": 10, // In kg
-            "transaction_amount": 100000, // In rupiah
-            "transaction_date": "2024-04-24",
-            "transaction_image_url": "http://example.com/image.jpg" // Optional
+            "id": "61e50e9c-b957-4d42-bc2e-c7cfc0c1fc0b",
+            "transaction_amount": 200,
+            "transaction_weight": 10,
+            "transaction_date": "2024-03-16T08:53:44.824Z",
+            "transaction_unit": "Kg",
+            "transaction_material": "Frozen",
+            "transaction_image_url": null,
+            "created_at": "2024-03-16T13:19:32.321Z",
+            "updated_at": "2024-03-16T13:19:32.321Z",
+            "transaction_id": "0506b0e6-71dd-4fc2-88e6-2f9ff45591f0"
+          },
+          {
+            "id": "1ace22af-661b-4280-9522-3c978c2ad86e",
+            "transaction_amount": 200,
+            "transaction_weight": 10,
+            "transaction_date": "2024-03-15T20:01:19.083Z",
+            "transaction_unit": "Kg",
+            "transaction_material": "Wooden",
+            "transaction_image_url": null,
+            "created_at": "2024-03-16T13:19:32.321Z",
+            "updated_at": "2024-03-16T13:19:32.321Z",
+            "transaction_id": "0506b0e6-71dd-4fc2-88e6-2f9ff45591f0"
           }
-        ]
+        ],
+        "user_detail": {
+          "id": "7b4ada85-5fda-46eb-b253-5bdf0c56a70c",
+          "first_name": "Elmer",
+          "last_name": "Kovacek",
+          "user_email": "Hannah_Corwin@yahoo.com"
+        }
       }
     }
     ```
@@ -785,31 +1138,48 @@
     ```json
     {
       "status": true,
-      "message": "Berhasil mendapatkan data transaksi",
+      "message": "GET Get Transaction By Id successfully retrieved",
       "data": {
-        "id": "ci2-2090-29i929",
-        "transaction_type": "redeem",
-        "transaction_status": "pending",
-        "note": "Diterima dengan baik", // Catatan dari admin
-        "user": {
-          "id": "ci2-2090-asdasd",
-          "phone_number": "081234567890",
-          "email": "john@example.com",
-          "detail": {
-            "first_name": "john",
-            "last_name": "doe",
-            "user_image_url": "http://example.com/image.jpg"
-          }
-        },
-        "detail": [
+        "id": "0506b0e6-71dd-4fc2-88e6-2f9ff45591f0",
+        "transaction_status": "Pending",
+        "user_detail_id": "7b4ada85-5fda-46eb-b253-5bdf0c56a70c",
+        "notes": "Catatan Transaksi 2",
+        "deleted_at": null,
+        "created_at": "2024-03-16T13:19:32.321Z",
+        "updated_at": "2024-03-16T13:19:32.321Z",
+        "transaction_type": "Redeem",
+        "transaction_detail": [
           {
-            "transaction_material": "Kardus", // Fill with material name
-            "transaction_weight": 10, // In kg
-            "transaction_amount": 100000, // In rupiah
-            "transaction_date": "2024-04-24",
-            "transaction_image_url": "http://example.com/image.jpg" // Optional
+            "id": "61e50e9c-b957-4d42-bc2e-c7cfc0c1fc0b",
+            "transaction_amount": 200,
+            "transaction_weight": 10,
+            "transaction_date": "2024-03-16T08:53:44.824Z",
+            "transaction_unit": "Kg",
+            "transaction_material": "Frozen",
+            "transaction_image_url": null,
+            "created_at": "2024-03-16T13:19:32.321Z",
+            "updated_at": "2024-03-16T13:19:32.321Z",
+            "transaction_id": "0506b0e6-71dd-4fc2-88e6-2f9ff45591f0"
+          },
+          {
+            "id": "1ace22af-661b-4280-9522-3c978c2ad86e",
+            "transaction_amount": 200,
+            "transaction_weight": 10,
+            "transaction_date": "2024-03-15T20:01:19.083Z",
+            "transaction_unit": "Kg",
+            "transaction_material": "Wooden",
+            "transaction_image_url": null,
+            "created_at": "2024-03-16T13:19:32.321Z",
+            "updated_at": "2024-03-16T13:19:32.321Z",
+            "transaction_id": "0506b0e6-71dd-4fc2-88e6-2f9ff45591f0"
           }
-        ]
+        ],
+        "user_detail": {
+          "id": "7b4ada85-5fda-46eb-b253-5bdf0c56a70c",
+          "first_name": "Elmer",
+          "last_name": "Kovacek",
+          "user_email": "Hannah_Corwin@yahoo.com"
+        }
       }
     }
     ```
