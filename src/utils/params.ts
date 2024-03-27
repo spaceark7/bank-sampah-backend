@@ -33,4 +33,6 @@ export interface FilterParam {
   type?: string
   filter?: string
   user_id?: string
+  is_deleted?: boolean
+  is_active?: boolean
 }
