@@ -77,11 +77,7 @@ const RegisterSchema = yup.object({
 
 const LoginSchema = yup.object({
   email: yup.string().email('Email tidak valid').required('Email tidak boleh kosong'),
-  password: yup.string().required('Password tidak boleh kosong'),
-  confirm_password: yup
-    .string()
-    .required('Konfirmasi password tidak boleh kosong')
-    .oneOf([yup.ref('password')], 'Password tidak sama')
+  password: yup.string().required('Password tidak boleh kosong')
 })
 
 export { RegisterSchema, LoginSchema, UserDetailSchema, UserCitizenSchema, AddressSchema, UpdateUserSchema }
