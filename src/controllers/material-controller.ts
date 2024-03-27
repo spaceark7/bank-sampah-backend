@@ -1,6 +1,7 @@
 import { MaterialServices } from '../services/materials/material-services'
 import { NextFunction, Request, Response } from 'express'
 import { HTTP_METHOD, HTTP_RESPONSE_STATUS, ResponseDTO } from '../utils/response-dto'
+import { FilterParam } from '../utils/params'
 
 export class MaterialController {
   private materialServiceInstance: MaterialServices
@@ -27,15 +28,18 @@ export class MaterialController {
   }
 
   async getAllMaterial(req: Request, res: Response, next: NextFunction) {
+    const filter: FilterParam = req.query
+
     try {
-      const data = await this.materialServiceInstance.getAll()
+      const data = await this.materialServiceInstance.getAll(filter)
 
       res.status(200).json(
         ResponseDTO({
-          data: data,
+          data: data.result,
           instanceName: 'Get All Material',
           status: HTTP_RESPONSE_STATUS.OK,
-          method: HTTP_METHOD.GET
+          method: HTTP_METHOD.GET,
+          meta: data.metadata
         })
       )
     } catch (error) {

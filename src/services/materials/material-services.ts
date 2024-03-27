@@ -1,6 +1,7 @@
 import { PrismaErrorHandle, prismaClient } from '../../config/database'
 import { ResponseError } from '../../utils/error-response'
-import { MaterialParam } from '../../utils/params'
+import generatePaginationMetadata from '../../utils/pagination'
+import { FilterParam, MaterialParam } from '../../utils/params'
 import { MaterialCreateSchema } from '../../utils/validations/material/material-validation'
 import { Validate } from '../../utils/validations/validate'
 
@@ -47,15 +48,36 @@ export class MaterialServices {
    * @desc Get All Material
    * @return {Promise<any>}
    * */
-  async getAll(): Promise<any> {
-    const data = await prismaClient.material.findMany({
+  async getAll(param: FilterParam = {}): Promise<{
+    metadata: any
+    result: any[]
+  }> {
+    const count = prismaClient.material.count({
       where: {
         is_deleted: false,
-        is_active: true,
+        is_active: param.is_active ?? true,
         deleted_at: null
       }
     })
-    return data
+    const [metadata, result] = await Promise.all([
+      generatePaginationMetadata(Number(param.page || 1), Number(param.limit || 10), count),
+      prismaClient.material.findMany({
+        where: {
+          is_deleted: false,
+          is_active: param.is_active ?? true,
+          deleted_at: null
+        }
+      })
+    ])
+
+    if (!result || result.length < 1) {
+      throw new ResponseError(400, 'Material not found')
+    }
+
+    return {
+      metadata,
+      result
+    }
   }
 
   /***
