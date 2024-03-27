@@ -62,6 +62,8 @@ export class MaterialServices {
     const [metadata, result] = await Promise.all([
       generatePaginationMetadata(Number(param.page || 1), Number(param.limit || 10), count),
       prismaClient.material.findMany({
+        skip: (Number(param.page || 1) - 1) * (Number(param.limit) || 10),
+        take: Number(param.limit) || 10,
         where: {
           is_deleted: false,
           is_active: param.is_active ?? true,
