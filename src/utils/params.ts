@@ -34,5 +34,7 @@ export interface FilterParam {
   filter?: string
   user_id?: string
   is_deleted?: boolean
-  is_active?: boolean
+  date?: Date | string | null
+  arg_date?: string
+  is_active?: string
 }
