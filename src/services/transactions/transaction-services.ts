@@ -157,7 +157,7 @@ export class TransactionService {
           id: true,
           transaction_status: true,
           notes: true,
-          transaction_type_id: true,
+          transaction_type: true,
           created_at: true,
           updated_at: true,
           updated_by: isAdmin ? true : false,

@@ -163,6 +163,7 @@ export class UserService {
         role_id: true,
         user_detail: {
           select: {
+            id: true,
             first_name: true,
             last_name: true,
             user_image_url: true,
