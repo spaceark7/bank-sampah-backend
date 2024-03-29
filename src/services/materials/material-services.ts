@@ -1,5 +1,6 @@
 import { PrismaErrorHandle, prismaClient } from '../../config/database'
 import { ResponseError } from '../../utils/error-response'
+import { DateParamParser } from '../../utils/helper'
 import generatePaginationMetadata from '../../utils/pagination'
 import { FilterParam, MaterialParam } from '../../utils/params'
 import { MaterialCreateSchema } from '../../utils/validations/material/material-validation'
@@ -52,10 +53,15 @@ export class MaterialServices {
     metadata: any
     result: any[]
   }> {
+    console.log('getAll:material', param.date, param.arg_date)
     const count = prismaClient.material.count({
       where: {
         is_deleted: false,
-        is_active: param.is_active ?? true,
+        is_active: param.is_active === 'true' ? true : param.is_active === 'false' ? false : undefined,
+        name: {
+          contains: param.search ?? ''
+        },
+        created_at: DateParamParser(param.date as string, param.arg_date as string),
         deleted_at: null
       }
     })
@@ -66,13 +72,21 @@ export class MaterialServices {
         take: Number(param.limit) || 10,
         where: {
           is_deleted: false,
-          is_active: param.is_active ?? true,
+          is_active: param.is_active === 'true' ? true : param.is_active === 'false' ? false : undefined,
+
+          name: {
+            contains: param.search ?? ''
+          },
+          created_at: DateParamParser(param.date as string, param.arg_date as string),
           deleted_at: null
+        },
+        orderBy: {
+          created_at: 'desc'
         }
       })
     ])
 
-    if (!result || result.length < 1) {
+    if (!result) {
       throw new ResponseError(400, 'Material not found')
     }
 
@@ -128,7 +142,8 @@ export class MaterialServices {
         data: {
           name: data.name ?? '',
           base_price: data.base_price,
-          unit: data.unit ?? ''
+          unit: data.unit ?? '',
+          is_active: data.is_active ?? true
         }
       })
       .catch((error) => {
