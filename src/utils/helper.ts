@@ -3,6 +3,7 @@ export const StringConcate = (...strings: string[]) => {
 }
 
 export const DateParamParser = (date: string, arg_date: string) => {
+  console.log('date param', date)
   if (!date) {
     return undefined
   }
