@@ -423,7 +423,7 @@ export class UserService {
         },
         orderBy: {
           user_detail: {
-            created_at: 'desc'
+            created_at: 'asc'
           }
         },
         select: {
