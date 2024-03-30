@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { UserService } from '../services/users/user-services'
 import { HTTP_METHOD, HTTP_RESPONSE_STATUS, ResponseDTO } from '../utils/response-dto'
+import { FilterParam } from '../utils/params'
 
 export class UserController {
   private static instanceName: string = 'User'
@@ -167,15 +168,17 @@ export class UserController {
    * @group Admin - Operations about user
    */
   static async getAllAdminUsers(req: Request, res: Response, next: NextFunction) {
+    const filter: FilterParam = req.query
     try {
-      const data = await UserService.getAllUser(true)
+      const data = await UserService.getAllUser(filter, true)
 
       res.status(HTTP_RESPONSE_STATUS.OK).json(
         ResponseDTO({
-          data: data,
+          data: data.result,
           instanceName: UserController.instanceName,
           status: HTTP_RESPONSE_STATUS.OK,
-          method: HTTP_METHOD.GET
+          method: HTTP_METHOD.GET,
+          meta: data.metadata
         })
       )
     } catch (error) {

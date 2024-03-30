@@ -1,3 +1,4 @@
+import { FilterParam } from './../../utils/params'
 import { PrismaErrorHandle, prismaClient } from '../../config/database'
 import { ResponseError } from '../../utils/error-response'
 import { UserAddCitizenParam, UserCreateParam, UserLoginParam, UserParam, UserUpdateParam } from '../../utils/params'
@@ -5,6 +6,9 @@ import { LoginSchema, RegisterSchema, UpdateUserSchema, UserCitizenSchema } from
 import { Validate } from '../../utils/validations/validate'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { DateParamParser } from '../../utils/helper'
+import generatePaginationMetadata from '../../utils/pagination'
+import { User } from '@prisma/client'
 
 export class UserService {
   /***
@@ -208,6 +212,10 @@ export class UserService {
    * */
   static async update(user: Pick<UserParam, 'id'>, data: UserUpdateParam): Promise<any> {
     const updateData: UserUpdateParam = await Validate(UpdateUserSchema, data)
+    if (updateData.password && updateData.password.length < 8) {
+      throw new ResponseError(401, 'Password minimal 8 karakter')
+    }
+
     const userExist = await prismaClient.user.findFirst({
       where: {
         id: user.id
@@ -382,41 +390,60 @@ export class UserService {
    * User Service
    * @desc Get All User
    * @param {UserParam} user
-   * @return {Promise<any>}
    * @throws {ResponseError}
    * */
-  static async getAllUser(adminOnly: boolean = false): Promise<any> {
-    const users = await prismaClient.user.findMany({
+  static async getAllUser(filter: FilterParam = {}, adminOnly: boolean = false) {
+    const count = prismaClient.user.count({
       where: {
         role_id: adminOnly ? 'Admin' : 'User',
         user_detail: {
+          first_name: filter.search ? { contains: filter.search } : undefined,
           deleted_at: {
             equals: null
           },
-          activated_at: {
-            not: null
-          }
-        }
-      },
-      select: {
-        id: true,
-        email: true,
-        phone_number: true,
-        role_id: true,
-        user_detail: {
-          select: {
-            id: true,
-            first_name: true,
-            last_name: true,
-            user_image_url: true,
-            activated_at: true,
-            deleted_at: true,
-            balance: !adminOnly
-          }
+          created_at: DateParamParser(filter.date as string, filter.arg_date as string),
+          activated_at: filter.is_active === '1' ? { not: null } : filter.is_active === '2' ? { equals: null } : undefined
         }
       }
     })
 
-    return users
+    const [metadata, result] = await Promise.all([
+      generatePaginationMetadata(Number(filter.page || 1), Number(filter.limit || 10), count),
+      prismaClient.user.findMany({
+        where: {
+          role_id: adminOnly ? 'Admin' : 'User',
+          user_detail: {
+            first_name: filter.search ? { contains: filter.search } : undefined,
+            deleted_at: {
+              equals: null
+            },
+            created_at: DateParamParser(filter.date as string, filter.arg_date as string),
+            activated_at: filter.is_active === '1' ? { not: null } : filter.is_active === '2' ? { equals: null } : undefined
+          }
+        },
+        select: {
+          id: true,
+          email: true,
+          phone_number: true,
+          role_id: true,
+          user_detail: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              user_image_url: true,
+              activated_at: true,
+              deleted_at: true,
+              balance: !adminOnly
+            }
+          }
+        }
+      })
+    ])
+
+    return {
+      metadata,
+      result
+    }
   }
 }
