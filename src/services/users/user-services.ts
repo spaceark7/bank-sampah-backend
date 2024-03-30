@@ -38,10 +38,10 @@ export class UserService {
           role: {
             connectOrCreate: {
               where: {
-                name: data.isAdmin ? 'Admin' : 'User'
+                name: data.is_admin ? 'Admin' : 'User'
               },
               create: {
-                name: data.isAdmin ? 'Admin' : 'User'
+                name: data.is_admin ? 'Admin' : 'User'
               }
             }
           },
