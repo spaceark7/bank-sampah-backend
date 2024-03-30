@@ -53,8 +53,11 @@ const UpdateUserSchema = yup.object({
     .string()
     .min(10, 'Nomor telepon tidak valid')
     .matches(/^[0-9]+$/, 'Nomor telepon tidak valid'),
-  password: yup.string().min(8, 'Password minimal 8 karakter'),
-  confirm_password: yup.string().oneOf([yup.ref('password')], 'Password tidak sama'),
+  password: yup.string().nullable().notRequired(),
+  confirm_password: yup
+    .string()
+    .oneOf([yup.ref('password')], 'Password tidak sama')
+    .nullable(),
   user_detail: UserDetailSchema
 })
 
