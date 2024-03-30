@@ -421,6 +421,11 @@ export class UserService {
             activated_at: filter.is_active === '1' ? { not: null } : filter.is_active === '2' ? { equals: null } : undefined
           }
         },
+        orderBy: {
+          user_detail: {
+            created_at: 'desc'
+          }
+        },
         select: {
           id: true,
           email: true,
