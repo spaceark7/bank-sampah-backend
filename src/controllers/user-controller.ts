@@ -127,7 +127,25 @@ export class UserController {
 
   static async addOrEditUserCitizenshipInfo(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await UserService.addOrEditUserCitizenship(req.user, req.body)
+      const data = await UserService.addOrEditUserCitizenship(req.user.id, req.body)
+
+      res.status(HTTP_RESPONSE_STATUS.OK).json(
+        ResponseDTO({
+          data: data,
+          instanceName: UserController.instanceName,
+          status: HTTP_RESPONSE_STATUS.OK,
+          method: HTTP_METHOD.POST
+        })
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async adminAddOrEditUserCitizenshipInfo(req: Request, res: Response, next: NextFunction) {
+    const { userId } = req.params
+    try {
+      const data = await UserService.addOrEditUserCitizenship(userId, req.body)
 
       res.status(HTTP_RESPONSE_STATUS.OK).json(
         ResponseDTO({
@@ -147,15 +165,17 @@ export class UserController {
    * @group Admin - Operations about user
    */
   static async getAllUsers(req: Request, res: Response, next: NextFunction) {
+    const filter: FilterParam = req.query
     try {
-      const data = await UserService.getAllUser()
+      const data = await UserService.getAllUser(filter, false)
 
       res.status(HTTP_RESPONSE_STATUS.OK).json(
         ResponseDTO({
-          data: data,
+          data: data.result,
           instanceName: UserController.instanceName,
           status: HTTP_RESPONSE_STATUS.OK,
-          method: HTTP_METHOD.GET
+          method: HTTP_METHOD.GET,
+          meta: data.metadata
         })
       )
     } catch (error) {

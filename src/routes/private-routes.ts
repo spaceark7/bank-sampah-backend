@@ -87,6 +87,22 @@ protectedRoute.post('/users-citizenship', UserController.addOrEditUserCitizenshi
 protectedRoute.put('/users-citizenship', UserController.addOrEditUserCitizenshipInfo)
 
 /**
+ * @desc  Admin Add User Citizenship Info
+ * @route POST /api/v1/users-citizenship
+ * @access Admin
+ * @requiredHeaders Authorization
+ */
+protectedRoute.post('/users-citizenship/:userId', RBACMiddleware, UserController.addOrEditUserCitizenshipInfo)
+
+/**
+ * @desc  Admin Edit User Citizenship Info
+ * @route POST /api/v1/users/citizen
+ * @access Admin
+ * @requiredHeaders Authorization
+ */
+protectedRoute.put('/users-citizenship/:userId', RBACMiddleware, UserController.addOrEditUserCitizenshipInfo)
+
+/**
  * @desc  Create Material
  * @route POST /api/v1/materials
  * @access Admin

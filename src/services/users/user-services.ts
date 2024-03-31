@@ -278,12 +278,12 @@ export class UserService {
    * @return {Promise<any>}
    * @throws {ResponseError}
    * */
-  static async addOrEditUserCitizenship(user: UserParam, data: UserAddCitizenParam): Promise<any> {
+  static async addOrEditUserCitizenship(userId: string, data: UserAddCitizenParam): Promise<any> {
     const citizenData: UserAddCitizenParam = await Validate(UserCitizenSchema, data)
 
     const userExist = await prismaClient.user.findFirst({
       where: {
-        id: user.id
+        id: userId
       }
     })
 
@@ -437,6 +437,7 @@ export class UserService {
               first_name: true,
               last_name: true,
               user_image_url: true,
+              created_at: true,
               activated_at: true,
               deleted_at: true,
               balance: !adminOnly
