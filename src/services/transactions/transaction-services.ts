@@ -134,7 +134,26 @@ export class TransactionService {
             transaction_status: param.status ?? undefined
           }
         ],
-        user_detail_id: param.user_id ?? undefined
+        user_detail_id: param.user_id ?? undefined,
+        user_detail: {
+          OR: [
+            {
+              first_name: {
+                contains: param.search ?? ''
+              }
+            },
+            {
+              last_name: {
+                contains: param.search ?? ''
+              }
+            },
+            {
+              user_email: {
+                contains: param.search ?? ''
+              }
+            }
+          ]
+        }
       }
     })
     const [metadata, result] = await Promise.all([
@@ -145,13 +164,32 @@ export class TransactionService {
         where: {
           AND: [
             {
-              transaction_type: param.type
+              transaction_type: param.type ?? undefined
             },
             {
               transaction_status: param.status
             }
           ],
-          user_detail_id: param.user_id ?? undefined
+          user_detail_id: param.user_id ?? undefined,
+          user_detail: {
+            OR: [
+              {
+                first_name: {
+                  contains: param.search ?? ''
+                }
+              },
+              {
+                last_name: {
+                  contains: param.search ?? ''
+                }
+              },
+              {
+                user_email: {
+                  contains: param.search ?? ''
+                }
+              }
+            ]
+          }
         },
         select: {
           id: true,
