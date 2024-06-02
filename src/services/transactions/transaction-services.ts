@@ -161,6 +161,9 @@ export class TransactionService {
       prismaClient.transaction.findMany({
         skip: (Number(param.page || 1) - 1) * (Number(param.limit) || 10),
         take: Number(param.limit) || 10,
+        orderBy: {
+          created_at: param.order === 'asc' ? 'asc' : 'desc'
+        },
         where: {
           AND: [
             {

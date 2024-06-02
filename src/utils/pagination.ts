@@ -18,6 +18,7 @@ async function generatePaginationMetadata(page = 1, pageSize = 10, count: Prisma
   return {
     page: currentPage,
     limit: pageSize,
+    currentPage,
     totalPages,
     totalItems: counter,
     hasNextPage,

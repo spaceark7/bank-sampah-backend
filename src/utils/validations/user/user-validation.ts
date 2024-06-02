@@ -48,7 +48,7 @@ const UserDetailSchema = yup.object({
 
 // Auth Related
 const UpdateUserSchema = yup.object({
-  email: yup.string().email('Email tidak valid'),
+  email: yup.string().email('Email tidak valid').required('Email tidak boleh kosong'),
   phone_number: yup
     .string()
     .min(10, 'Nomor telepon tidak valid')

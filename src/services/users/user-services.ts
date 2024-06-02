@@ -393,6 +393,7 @@ export class UserService {
    * @throws {ResponseError}
    * */
   static async getAllUser(filter: FilterParam = {}, adminOnly: boolean = false) {
+    console.log('getAllUser:filter', filter)
     const count = prismaClient.user.count({
       where: {
         role_id: adminOnly ? 'Admin' : 'User',
@@ -410,6 +411,8 @@ export class UserService {
     const [metadata, result] = await Promise.all([
       generatePaginationMetadata(Number(filter.page || 1), Number(filter.limit || 10), count),
       prismaClient.user.findMany({
+        skip: (Number(filter.page || 1) - 1) * (Number(filter.limit) || 10),
+        take: Number(filter.limit) || 10,
         where: {
           role_id: adminOnly ? 'Admin' : 'User',
           user_detail: {
@@ -423,7 +426,7 @@ export class UserService {
         },
         orderBy: {
           user_detail: {
-            created_at: 'asc'
+            created_at: filter.order === 'asc' ? 'asc' : 'desc'
           }
         },
         select: {

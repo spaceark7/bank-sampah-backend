@@ -4,6 +4,7 @@ import { authMiddleware } from '../middlewares/auth-jwt-middleware'
 import { MaterialController } from '../controllers/material-controller'
 import { RBACMiddleware } from '../middlewares/rbac-middleware'
 import { TransactionController } from '../controllers/transaction-controller'
+import { DashboardController } from '../controllers/dashboard-controller'
 
 const protectedRoute = express.Router()
 
@@ -13,6 +14,16 @@ const materialController = new MaterialController()
  * @desc Middleware
  */
 protectedRoute.use(authMiddleware)
+
+/**
+ * @desc  Admin Dashboard
+ * @route GET /api/v1/dashboard-admin
+ * @access Admin
+ * @requiredHeaders Authorization
+ *
+ * @return {Array} - Admin Dashboard Data
+ */
+protectedRoute.get('/dashboard-admin', RBACMiddleware, DashboardController.getAdminDashboard)
 
 /**
  * @desc  Get User Detail
