@@ -84,19 +84,19 @@ export class DashboardServices {
         {
           title: 'Member',
           value: userData,
-          icon: 'people',
+          icon: 'account-group-outline',
           fill: '#279C6F'
         },
         {
           title: 'Penyetoran',
           value: RedeemTransactionData,
-          icon: 'upload',
+          icon: 'upload-outline',
           fill: '#179E2B'
         },
         {
           title: 'Penarikan',
           value: WithdrawTransactionData,
-          icon: 'download',
+          icon: 'download-outline',
           fill: '#035DC4'
         },
         {
