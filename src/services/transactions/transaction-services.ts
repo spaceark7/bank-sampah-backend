@@ -14,6 +14,8 @@ export class TransactionService {
    */
   static async redeem(params: TransactionCreateParam, user?: string) {
     const trans: TransactionCreateParam = await Validate(TransactionCreateRedeemSchema, params)
+
+    console.log('trans', trans)
     const data = await prismaClient.$transaction(async (tx) => {
       const redeemTransaction = await tx.transaction
         .create({
@@ -100,7 +102,7 @@ export class TransactionService {
         })
 
         if (!balance) {
-          throw new ResponseError(500, 'Gagal membuat transaksi')
+          throw new ResponseError(500, 'Gagal mengupdate balance')
         }
 
         return {
@@ -134,26 +136,7 @@ export class TransactionService {
             transaction_status: param.status ?? undefined
           }
         ],
-        user_detail_id: param.user_id ?? undefined,
-        user_detail: {
-          OR: [
-            {
-              first_name: {
-                contains: param.search ?? ''
-              }
-            },
-            {
-              last_name: {
-                contains: param.search ?? ''
-              }
-            },
-            {
-              user_email: {
-                contains: param.search ?? ''
-              }
-            }
-          ]
-        }
+        user_detail_id: param.user_id ?? undefined
       }
     })
     const [metadata, result] = await Promise.all([
@@ -173,26 +156,7 @@ export class TransactionService {
               transaction_status: param.status
             }
           ],
-          user_detail_id: param.user_id ?? undefined,
-          user_detail: {
-            OR: [
-              {
-                first_name: {
-                  contains: param.search ?? ''
-                }
-              },
-              {
-                last_name: {
-                  contains: param.search ?? ''
-                }
-              },
-              {
-                user_email: {
-                  contains: param.search ?? ''
-                }
-              }
-            ]
-          }
+          user_detail_id: param.user_id ?? undefined
         },
         select: {
           id: true,
