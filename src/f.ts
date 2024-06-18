@@ -1,5 +1,7 @@
+import { Prisma } from '@prisma/client'
+
 function transfer(from: string, to: string, amount: number) {
-  return prisma.$transaction(async (tx) => {
+  return Prisma.$transaction(async (tx) => {
     // 1. Decrement amount from the sender.
     const sender = await tx.account.update({
       data: {
