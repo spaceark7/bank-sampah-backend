@@ -42,6 +42,13 @@ protectedRoute.get('/users', UserController.getUserDetail)
 protectedRoute.get('/users/all', RBACMiddleware, UserController.getAllUsers)
 
 /**
+ * @desc  Get User Detail
+ * @route GET /api/v1/members
+ * @access Admin
+ * @requiredHeaders Authorization
+ */
+protectedRoute.get('/members/:id', RBACMiddleware, UserController.getMemberDetail)
+/**
  * @desc  Create Admin User
  * @route GET /api/v1/users-admin'
  * @access Admin

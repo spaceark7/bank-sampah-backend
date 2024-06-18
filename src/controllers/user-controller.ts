@@ -69,6 +69,29 @@ export class UserController {
       next(error)
     }
   }
+  /**
+   * @desc Get Member Detail
+   * @group User - Operations about user
+   */
+  static async getMemberDetail(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params
+    try {
+      const data = await UserService.getUserDetail({
+        id
+      })
+      console.log('getMemberDetail', data)
+      res.status(HTTP_RESPONSE_STATUS.OK).json(
+        ResponseDTO({
+          data: data,
+          instanceName: UserController.instanceName,
+          status: HTTP_RESPONSE_STATUS.OK,
+          method: HTTP_METHOD.GET
+        })
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
 
   /**
    * @desc Update User

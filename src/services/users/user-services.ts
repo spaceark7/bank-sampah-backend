@@ -1,4 +1,4 @@
-import { FilterParam } from './../../utils/params'
+import { FilterParam, FiltersParser } from './../../utils/params'
 import { PrismaErrorHandle, prismaClient } from '../../config/database'
 import { ResponseError } from '../../utils/error-response'
 import { UserAddCitizenParam, UserCreateParam, UserLoginParam, UserParam, UserUpdateParam } from '../../utils/params'
@@ -402,6 +402,9 @@ export class UserService {
           deleted_at: {
             equals: null
           },
+          citizenship: {
+            gender: filter.status
+          },
           created_at: DateParamParser(filter.date as string, filter.arg_date as string),
           activated_at: filter.is_active === '1' ? { not: null } : filter.is_active === '2' ? { equals: null } : undefined
         }
@@ -416,9 +419,12 @@ export class UserService {
         where: {
           role_id: adminOnly ? 'Admin' : 'User',
           user_detail: {
-            first_name: filter.search ? { contains: filter.search } : undefined,
+            first_name: filter.search ? { contains: filter.search, mode: 'insensitive' } : undefined,
             deleted_at: {
               equals: null
+            },
+            citizenship: {
+              gender: filter.status
             },
             created_at: DateParamParser(filter.date as string, filter.arg_date as string),
             activated_at: filter.is_active === '1' ? { not: null } : filter.is_active === '2' ? { equals: null } : undefined
@@ -426,7 +432,7 @@ export class UserService {
         },
         orderBy: {
           user_detail: {
-            created_at: filter.order === 'asc' ? 'asc' : 'desc'
+            first_name: filter.order === 'asc' ? 'asc' : 'desc'
           }
         },
         select: {
