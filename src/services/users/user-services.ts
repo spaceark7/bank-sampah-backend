@@ -8,7 +8,6 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { DateParamParser } from '../../utils/helper'
 import generatePaginationMetadata from '../../utils/pagination'
-import { User } from '@prisma/client'
 
 export class UserService {
   /***
@@ -61,6 +60,7 @@ export class UserService {
           }
         },
         select: {
+          id: true,
           email: true,
           phone_number: true,
           role_id: true,
