@@ -43,7 +43,7 @@ protectedRoute.get('/users/all', RBACMiddleware, UserController.getAllUsers)
 
 /**
  * @desc  Get User Detail
- * @route GET /api/v1/members
+ * @route GET /api/v1/members/:id
  * @access Admin
  * @requiredHeaders Authorization
  */
@@ -110,7 +110,7 @@ protectedRoute.put('/users-citizenship', UserController.addOrEditUserCitizenship
  * @access Admin
  * @requiredHeaders Authorization
  */
-protectedRoute.post('/users-citizenship/:userId', RBACMiddleware, UserController.addOrEditUserCitizenshipInfo)
+protectedRoute.post('/users/citizenship/:userId', RBACMiddleware, UserController.adminAddOrEditUserCitizenshipInfo)
 
 /**
  * @desc  Admin Edit User Citizenship Info
@@ -118,7 +118,7 @@ protectedRoute.post('/users-citizenship/:userId', RBACMiddleware, UserController
  * @access Admin
  * @requiredHeaders Authorization
  */
-protectedRoute.put('/users-citizenship/:userId', RBACMiddleware, UserController.addOrEditUserCitizenshipInfo)
+protectedRoute.put('/users/citizenship/:userId', RBACMiddleware, UserController.adminAddOrEditUserCitizenshipInfo)
 
 /**
  * @desc  Create Material
