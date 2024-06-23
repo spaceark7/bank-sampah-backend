@@ -48,7 +48,7 @@ const UserDetailSchema = yup.object({
 
 // Auth Related
 const UpdateUserSchema = yup.object({
-  email: yup.string().email('Email tidak valid').required('Email tidak boleh kosong'),
+  email: yup.string().email('Email tidak valid').lowercase().required('Email tidak boleh kosong'),
   phone_number: yup
     .string()
     .min(10, 'Nomor telepon tidak valid')
@@ -63,7 +63,7 @@ const UpdateUserSchema = yup.object({
 
 // Auth Related
 const RegisterSchema = yup.object({
-  email: yup.string().email('Email tidak valid').required('Email tidak boleh kosong'),
+  email: yup.string().email('Email tidak valid').lowercase().required('Email tidak boleh kosong'),
   phone_number: yup
     .string()
     .min(10, 'Nomor telepon tidak valid')
@@ -79,7 +79,7 @@ const RegisterSchema = yup.object({
 })
 
 const LoginSchema = yup.object({
-  email: yup.string().email('Email tidak valid').required('Email tidak boleh kosong'),
+  email: yup.string().email('Email tidak valid').lowercase().required('Email tidak boleh kosong'),
   password: yup.string().required('Password tidak boleh kosong')
 })
 

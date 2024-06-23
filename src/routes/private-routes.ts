@@ -78,7 +78,7 @@ protectedRoute.put('/users', UserController.updateUser)
  * @access Admin
  * @requiredHeaders Authorization
  */
-protectedRoute.put('/users-admin/:id', RBACMiddleware, UserController.updateAdminUser)
+protectedRoute.put('/members/:id', RBACMiddleware, UserController.updateAdminUser)
 
 /**
  * @desc  Deactivate User
@@ -110,15 +110,15 @@ protectedRoute.put('/users-citizenship', UserController.addOrEditUserCitizenship
  * @access Admin
  * @requiredHeaders Authorization
  */
-protectedRoute.post('/users/citizenship/:userId', RBACMiddleware, UserController.adminAddOrEditUserCitizenshipInfo)
+protectedRoute.post('/members/citizenship/:userId', RBACMiddleware, UserController.adminAddOrEditUserCitizenshipInfo)
 
 /**
  * @desc  Admin Edit User Citizenship Info
- * @route POST /api/v1/users/citizen
+ * @route EDIT /api/v1/members/citizen
  * @access Admin
  * @requiredHeaders Authorization
  */
-protectedRoute.put('/users/citizenship/:userId', RBACMiddleware, UserController.adminAddOrEditUserCitizenshipInfo)
+protectedRoute.put('/members/citizenship/:userId', RBACMiddleware, UserController.adminAddOrEditUserCitizenshipInfo)
 
 /**
  * @desc  Create Material
