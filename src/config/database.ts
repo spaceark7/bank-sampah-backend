@@ -46,5 +46,7 @@ export const PrismaErrorHandle = (error: Prisma.PrismaClientKnownRequestError) =
       errorMessage = `${error.meta.target.join(',')} sudah terdaftar`
     }
     throw new ResponseError(400, errorMessage)
+  } else {
+    throw new ResponseError(400, 'Terjadi kesalahan pada server')
   }
 }
