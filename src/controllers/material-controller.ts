@@ -65,7 +65,7 @@ export class MaterialController {
   }
 
   async updateMaterial(req: Request, res: Response, next: NextFunction) {
-    const id = req.params.id
+    const { id } = req.params
     try {
       const data = await this.materialServiceInstance.update(id, req.body)
 
