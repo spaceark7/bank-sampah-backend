@@ -53,7 +53,7 @@ export class MaterialServices {
     metadata: any
     result: any[]
   }> {
-    console.log('getAll:material', param.date, param.arg_date)
+    console.log('getAll:material', param.order, param.arg_date)
     const count = prismaClient.material.count({
       where: {
         is_deleted: false,
@@ -81,7 +81,7 @@ export class MaterialServices {
           deleted_at: null
         },
         orderBy: {
-          created_at: 'desc'
+          name: param.order === 'asc' ? 'asc' : 'desc'
         }
       })
     ])
@@ -129,9 +129,10 @@ export class MaterialServices {
    * @return {Promise<any>}
    * @throws {ResponseError}
    * */
-  async update(id: any, param: MaterialParam): Promise<any> {
-    if (!id || id === '' || id === undefined || id === null) {
-      throw new ResponseError(400, 'Material Id is required')
+  async update(id: string, param: MaterialParam): Promise<any> {
+    if (!id || id === 'undefined' || id === null) {
+      console.log('update:material', id)
+      throw new ResponseError(400, 'Material Id dibutuhkan')
     }
     const data: MaterialParam = await Validate(MaterialCreateSchema, param)
     const material = await prismaClient.material
@@ -162,7 +163,7 @@ export class MaterialServices {
    *
    * */
   async delete(id: any): Promise<any> {
-    if (!id || id === '' || id === undefined || id === null) {
+    if (!id || id === '' || id === 'undefined' || id === null) {
       throw new ResponseError(400, 'Material Id is required')
     }
 
