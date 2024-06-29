@@ -96,7 +96,10 @@ export class UserService {
     const user = await prismaClient.user
       .findFirst({
         where: {
-          email: loginData.email,
+          email: {
+            equals: loginData.email,
+            mode: 'insensitive'
+          },
           user_detail: {
             deleted_at: {
               equals: null
