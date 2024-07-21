@@ -1,4 +1,3 @@
-import queryString from 'query-string'
 import { FilterParam } from './params'
 export const StringConcate = (...strings: string[]) => {
   return strings.join(' ')
