@@ -1,13 +1,13 @@
-import { FilterParam, FiltersParser } from './../../utils/params'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import { PrismaErrorHandle, prismaClient } from '../../config/database'
 import { ResponseError } from '../../utils/error-response'
+import generatePaginationMetadata from '../../utils/pagination'
 import { UserAddCitizenParam, UserCreateParam, UserLoginParam, UserParam, UserUpdateParam } from '../../utils/params'
 import { LoginSchema, RegisterSchema, UpdateUserSchema, UserCitizenSchema } from '../../utils/validations/user/user-validation'
 import { Validate } from '../../utils/validations/validate'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import { DateParamParser } from '../../utils/helper'
-import generatePaginationMetadata from '../../utils/pagination'
+import { FilterParam } from './../../utils/params'
+import { ParseQueryFilter } from '../../utils/helper'
 
 export class UserService {
   /***
@@ -396,23 +396,23 @@ export class UserService {
    * @throws {ResponseError}
    * */
   static async getAllUser(filter: FilterParam = {}, adminOnly: boolean = false) {
-    console.log('getAllUser:filter', filter)
     const count = prismaClient.user.count({
       where: {
         role_id: adminOnly ? 'Admin' : 'User',
         user_detail: {
-          first_name: filter.search ? { contains: filter.search } : undefined,
+          first_name: filter.search ? { contains: filter.search, mode: 'insensitive' } : undefined,
+
           deleted_at: {
             equals: null
           },
           citizenship: {
-            gender: filter.status
+            gender: filter.status ? filter.status : undefined
           },
-          created_at: DateParamParser(filter.date as string, filter.arg_date as string),
           activated_at: filter.is_active === '1' ? { not: null } : filter.is_active === '2' ? { equals: null } : undefined
         }
       }
     })
+    console.log('getAllUser:count', await count)
 
     const [metadata, result] = await Promise.all([
       generatePaginationMetadata(Number(filter.page || 1), Number(filter.limit || 10), count),
@@ -427,9 +427,8 @@ export class UserService {
               equals: null
             },
             citizenship: {
-              gender: filter.status
+              gender: filter.status ? filter.status : undefined
             },
-            created_at: DateParamParser(filter.date as string, filter.arg_date as string),
             activated_at: filter.is_active === '1' ? { not: null } : filter.is_active === '2' ? { equals: null } : undefined
           }
         },
