@@ -1,5 +1,6 @@
 import { PrismaErrorHandle, prismaClient } from '../../config/database'
 import { ResponseError } from '../../utils/error-response'
+import { DateParamParser, ParseQueryFilter } from '../../utils/helper'
 import generatePaginationMetadata from '../../utils/pagination'
 import { FilterParam, TransactionCreateParam } from '../../utils/params'
 import { TransactionCreateRedeemSchema } from '../../utils/validations/transactions/redeem-validations'
@@ -126,19 +127,41 @@ export class TransactionService {
    * @returns
    */
   static async listTransaction(param: FilterParam = {}, isAdmin: boolean = false) {
+    console.log('getlistTransaction:filter', ParseQueryFilter(param))
+
     const count = prismaClient.transaction.count({
       where: {
         AND: [
           {
-            transaction_type: param.type ?? undefined
+            transaction_type: param.type
+              ? {
+                  equals: param.type,
+                  mode: 'insensitive'
+                }
+              : undefined
           },
           {
             transaction_status: param.status ?? undefined
+          },
+          {
+            created_at: DateParamParser(param.filter as string, 'lte')
+          },
+          {
+            user_detail: param.search
+              ? {
+                  first_name: {
+                    contains: param.search,
+                    mode: 'insensitive'
+                  }
+                }
+              : undefined
           }
         ],
         user_detail_id: param.user_id ?? undefined
       }
     })
+
+    console.log('count', await count)
     const [metadata, result] = await Promise.all([
       generatePaginationMetadata(Number(param.page || 1), Number(param.limit || 10), count),
       prismaClient.transaction.findMany({
@@ -150,10 +173,28 @@ export class TransactionService {
         where: {
           AND: [
             {
-              transaction_type: param.type ?? undefined
+              transaction_type: param.type
+                ? {
+                    equals: param.type,
+                    mode: 'insensitive'
+                  }
+                : undefined
             },
             {
-              transaction_status: param.status
+              transaction_status: param.status ?? undefined
+            },
+            {
+              created_at: DateParamParser(param.filter as string, 'lte')
+            },
+            {
+              user_detail: param.search
+                ? {
+                    first_name: {
+                      contains: param.search,
+                      mode: 'insensitive'
+                    }
+                  }
+                : undefined
             }
           ],
           user_detail_id: param.user_id ?? undefined
